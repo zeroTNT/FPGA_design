@@ -26,7 +26,7 @@ integer patcount;
 integer input_file, output_file;
 integer i, j;
 // wire & registers declaration
-reg [2:0] golden_address [0:7];
+reg [2:0] golden_address;
 reg [7:0] golden_Outpattern;
 
 //===========================================================================
@@ -64,16 +64,16 @@ end
 //                             Task
 //===========================================================================
 task input_task; begin
-    for ( i = 0; i < 8; i=i+1) begin
+    for ( i = 0; i < 1; i=i+1) begin
         j = $fscanf(input_file, "%d", golden_address[i]);
     end
+    address = {golden_address};
 end
 endtask
 
 task check_ans; begin
     j = $fscanf(output_file,"%d", golden_Outpattern);
     if(Outpattern !== golden_Outpattern) begin
-        //display_fail;
         $display ("-------------------------------------------------------------------");
 		$display ("*                            PATTERN NO.%4d 	                      ", patcount);
         $display ("         Output should be : %d , your answer is : %d           ", golden_Outpattern, Outpattern);
