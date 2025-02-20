@@ -10,7 +10,7 @@
 `include "Decoder3x8.v"
 module TESTBED ();
     
-// Declare signals
+// Signals declaration
 wire [2:0] address;
 wire [7:0] pattern;
 
