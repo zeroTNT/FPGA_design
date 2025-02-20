@@ -72,11 +72,17 @@ end
 endtask
 
 task check_ans; begin
-    j = $fscanf(output_file,"%d", golden_Outpattern);
+    for( i=0; i<8; i=i+1) begin
+        j = $fscanf(output_file,"%b", golden_Outpattern[i]);
+    end
     if(Outpattern !== golden_Outpattern) begin
         $display ("-------------------------------------------------------------------");
 		$display ("*                            PATTERN NO.%4d 	                      ", patcount);
-        $display ("         Output should be : %d , your answer is : %d           ", golden_Outpattern, Outpattern);
+        $display ("Output should be : %b%b%b%b%b%b%b%b , your answer is : %b%b%b%b%b%b%b%b",
+                    golden_Outpattern[0], golden_Outpattern[1], golden_Outpattern[2], golden_Outpattern[3],
+                    golden_Outpattern[4], golden_Outpattern[5], golden_Outpattern[6], golden_Outpattern[7],
+                    Outpattern[0], Outpattern[1], Outpattern[2], Outpattern[3],
+                    Outpattern[4], Outpattern[5], Outpattern[6], Outpattern[7]);
         $display ("-------------------------------------------------------------------");
         #(100);
         $finish ;
@@ -85,7 +91,7 @@ task check_ans; begin
 end endtask
 task display_pass; begin
     $display ("-------------------------------------------------------------------");
-    $display ("*                            All Patterns Passed                    ");
+    $display ("*                         All Patterns Passed                     *");
     $display ("-------------------------------------------------------------------");
 end endtask
 endmodule
