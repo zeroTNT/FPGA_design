@@ -10,4 +10,27 @@
 `include "Decoder3x8.v"
 module TESTBED ();
     
+// Declare signals
+wire [2:0] address;
+wire [7:0] pattern;
+
+// Instantiate the unit under test
+PATTERN_Decoder3x8 stimulus (
+    .Outpattern(pattern),
+    .address(address)
+);
+
+// Instantiate the stimulus generator
+Decoder3x8 DUT (
+    .address(address),
+    .Outpattern(pattern)
+);
+
+// waveforms
+initial begin
+    $fsdbDumpfile("TESTBED.fsdb");
+    $fsdbDumpvars(0, "+mda");
+    $fsdbDumpvars();
+    #1000 $finish;
+end
 endmodule
