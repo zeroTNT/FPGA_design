@@ -1,11 +1,12 @@
 // Verilog test fixture created from schematic /home/ise/VMShare/RF16bClkEn/RF16bClkEn.sch - Mon Mar 24 19:17:41 2025
-// maximum delay = 6.00ns
+
 `timescale 1ns / 1ps
 `define CYCLE_TIME 20.0
 module RF16bClkEn_RF16bClkEn_sch_tb();
 
 // Inputs
    reg clk_n;
+	reg clk_en;
    reg [15:0] D;
 
 // Output
@@ -18,14 +19,17 @@ module RF16bClkEn_RF16bClkEn_sch_tb();
 // Instantiate the UUT
    RF16bClkEn UUT (
 		.Q(Q), 
+		.clk_en(clk_en),
 		.clk_n(clk_n), 
 		.D(D)
    );
 // Initialize Inputs
    initial begin
       D = 16'hxxxx;
+		clk_en = 'b0;
       repeat(3) @(posedge clk_n);
       #20 D = 16'h0000;
+		#10 clk_en = 'b1;
       #20 D = 16'h1111;
       #20 D = 16'h2222;
       #20 D = 16'h4444;
