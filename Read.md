@@ -1,3 +1,10 @@
+FPGA family: Virtex-6
+FPGA device: XC6VLX75T-FF484
+FPGA speed: -3
+Simulator: ISim
+
+
+
 連結遠端儲存庫
 git remote add origin https://github.com/zeroTNT/FPGA_design.git
 
