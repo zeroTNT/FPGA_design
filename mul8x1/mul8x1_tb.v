@@ -19,9 +19,9 @@ module mul8x1_mul8x1_sch_tb();
   wire F;
 
 // Bidirs
-  wire [7:0] D;
+  reg [7:0] D;
   always @(*) begin
-    {D0, D1, D2, D3, D4, D5, D6, D7} = D;
+    {D7, D6, D5, D4, D3, D2, D1, D0} = D;
   end
 // Instantiate the UUT
   mul8x1 UUT (
