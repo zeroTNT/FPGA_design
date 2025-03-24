@@ -28,14 +28,14 @@ module RF16bClkEn_RF16bClkEn_sch_tb();
       D = 16'hxxxx;
 		clk_en = 'b0;
       repeat(3) @(posedge clk_n);
-      #20 D = 16'h0000;
+      @(posedge clk_n) #3 D = 16'h0000;
 		#10 clk_en = 'b1;
-      #20 D = 16'h1111;
-      #20 D = 16'h2222;
-      #20 D = 16'h4444;
-      #20 D = 16'h8888;
-      #20 D = 16'hcccc;
-      #20 D = 16'hffff;
+      @(posedge clk_n) #3 D = 16'h1111;
+      @(posedge clk_n) #3 D = 16'h2222;
+      @(posedge clk_n) #3 D = 16'h4444;
+      @(posedge clk_n) #3 D = 16'h8888;
+      @(posedge clk_n) #3 D = 16'hcccc;
+      @(posedge clk_n) #3 D = 16'hffff;
       #100 $finish;
    end
 endmodule
