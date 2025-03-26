@@ -28,7 +28,7 @@ module RF16bClkEn_RF16bClkEn_sch_tb();
       D = 16'hxxxx;
 		clk_en = 'b0;
       repeat(3) @(posedge clk_n);
-      @(posedge clk_n) #3 D = 16'h0000;
+      @(posedge clk_n) #3 D = 16'hdddd;
 		#10 clk_en = 'b1;
       @(posedge clk_n) #3 D = 16'h1111;
       @(posedge clk_n) #3 D = 16'h2222;

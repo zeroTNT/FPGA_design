@@ -7,14 +7,14 @@ module RegisterFile_RegisterFile_sch_tb();
 // Inputs
    reg clk_n;
    reg [2:0] Waddr;
-   reg [15:0] WData;
+   reg [15:0] Wdata;
    reg WE;
    reg [2:0] Aaddr;
    reg [2:0] Baddr;
 
 // Output
-   wire [15:0] AData;
-   wire [15:0] BData;
+   wire [15:0] Adata;
+   wire [15:0] Bdata;
 
 // Clock period
    real CYCLE = `CYCLE_TIME;
@@ -24,33 +24,33 @@ module RegisterFile_RegisterFile_sch_tb();
    RegisterFile UUT (
 		.clk_n(clk_n),
       .Waddr(Waddr),
-      .WData(WData),
+      .Wdata(Wdata),
       .WE(WE),
       .Aaddr(Aaddr),
       .Baddr(Baddr),
-      .AData(AData),
-      .BData(BData)
+      .Adata(Adata),
+      .Bdata(Bdata)
    );
 // Initialize Inputs
    initial begin
-      WData = 16'hxxxx; Waddr = 3'bxxx;
+      Wdata = 16'hxxxx; Waddr = 3'bxxx;
       Aaddr = 3'bxxx; Baddr = 3'bxxx;
 		WE = 'b0;
-      repeat(3) @(posedge clk_n);
-      #20 WData = 16'h1111; Waddr = 3'b000; WE = 1'b1;
-      #20 WData = 16'h2222; Waddr = 3'b001; WE = 1'b1;   Aaddr = 3'b000;
-      #20 WData = 16'h4444; Waddr = 3'b010; WE = 1'b1;   Baddr = 3'b001;
-      #20 WData = 16'h8888; Waddr = 3'b011; WE = 1'b1;   Aaddr = 3'b010;
-      #20 WData = 16'h9999; Waddr = 3'b100; WE = 1'b1;   Baddr = 3'b011;
-      #20 WData = 16'haaaa; Waddr = 3'b101; WE = 1'b1;   Aaddr = 3'b100;
-      #20 WData = 16'hcccc; Waddr = 3'b110; WE = 1'b1;   Baddr = 3'b101;
-      #20 WData = 16'hdddd; Waddr = 3'b111; WE = 1'b1;   Aaddr = 3'b110;
-      #20 Baddr = 3'b111;
+      repeat(7) @(posedge clk_n);
+      @(posedge clk_n) #3 Wdata = 16'h1111; Waddr = 3'b000; WE = 1'b1;
+      @(posedge clk_n) #3 Wdata = 16'h2222; Waddr = 3'b001; WE = 1'b1;   Aaddr = 3'b000;
+      @(posedge clk_n) #3 Wdata = 16'h4444; Waddr = 3'b010; WE = 1'b1;   Baddr = 3'b001;
+      @(posedge clk_n) #3 Wdata = 16'h8888; Waddr = 3'b011; WE = 1'b1;   Aaddr = 3'b010;
+      @(posedge clk_n) #3 Wdata = 16'h9999; Waddr = 3'b100; WE = 1'b1;   Baddr = 3'b011;
+      @(posedge clk_n) #3 Wdata = 16'haaaa; Waddr = 3'b101; WE = 1'b1;   Aaddr = 3'b100;
+      @(posedge clk_n) #3 Wdata = 16'hcccc; Waddr = 3'b110; WE = 1'b1;   Baddr = 3'b101;
+      @(posedge clk_n) #3 Wdata = 16'hdddd; Waddr = 3'b111; WE = 1'b1;   Aaddr = 3'b110;
+      @(posedge clk_n) #3 Baddr = 3'b111;
 
-      #20 WData = 16'h0000; Waddr = 3'b000; WE = 1'b0;
-      #20 WData = 16'heeee; Waddr = 3'b000; WE = 1'b1;
-      #20 WData = 16'hffff; Waddr = 3'b001; WE = 1'b1;
-      #20 Aaddr = 3'b000; Baddr = 3'b001;
+      @(posedge clk_n) #3 Wdata = 16'h0000; Waddr = 3'b000; WE = 1'b0;
+      @(posedge clk_n) #3 Wdata = 16'heeee; Waddr = 3'b000; WE = 1'b1;
+      @(posedge clk_n) #3 Wdata = 16'hffff; Waddr = 3'b001; WE = 1'b1;
+      @(posedge clk_n) #3 Aaddr = 3'b000; Baddr = 3'b001;
       #100 $finish;
    end
 endmodule
