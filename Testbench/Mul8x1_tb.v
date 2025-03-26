@@ -2,7 +2,7 @@
 
 `timescale 1ns / 1ps
 
-module mul8x1_mul8x1_sch_tb();
+module Mul8x1_Mul8x1_sch_tb();
 
 // Inputs
   reg D0;
@@ -24,7 +24,7 @@ module mul8x1_mul8x1_sch_tb();
     {D7, D6, D5, D4, D3, D2, D1, D0} = D;
   end
 // Instantiate the UUT
-  mul8x1 UUT (
+  Mul8x1 UUT (
     .D0(D0), 
     .D1(D1), 
     .D2(D2), 

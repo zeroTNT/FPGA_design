@@ -1,8 +1,8 @@
 // Verilog test fixture created from schematic /home/ise/VMShare/mul16b8x1/mul16b8x1.sch - Mon Mar 24 17:21:14 2025
-// maximum delay = 10.00ns
+// maximum delay = 10.000ns
 `timescale 1ns / 1ps
 
-module mul16b8x1_mul16b8x1_sch_tb();
+module Mul16b8x1_Mul16b8x1_sch_tb();
 
 // Inputs
    reg [2:0] addr;
@@ -24,7 +24,7 @@ module mul16b8x1_mul16b8x1_sch_tb();
     {D7, D6, D5, D4, D3, D2, D1, D0} = {D[7], D[6], D[5], D[4], D[3], D[2], D[1], D[0]};
   end
 // Instantiate the UUT
-   mul16b8x1 UUT (
+   Mul16b8x1 UUT (
 		.addr(addr), 
 		.D0(D0), 
 		.D1(D1), 

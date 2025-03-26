@@ -2,7 +2,7 @@
 // maximum delay = 6.097ns
 `timescale 1ns / 1ps
 `define CYCLE_TIME 50.0
-module RF16bClkEn_RF16bClkEn_sch_tb();
+module Reg16bClkEn_Reg16bClkEn_sch_tb();
 
 // Inputs
    reg clk_n;
@@ -17,7 +17,7 @@ module RF16bClkEn_RF16bClkEn_sch_tb();
    initial clk_n = 1'b1;
    always #(CYCLE/2) clk_n = ~clk_n;
 // Instantiate the UUT
-   RF16bClkEn UUT (
+   Reg16bClkEn UUT (
 		.Q(Q), 
 		.clk_en(clk_en),
 		.clk_n(clk_n), 
