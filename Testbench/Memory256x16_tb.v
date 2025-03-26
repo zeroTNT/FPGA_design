@@ -1,5 +1,5 @@
 // Verilog test fixture created from schematic /home/ise/VMShare/MulticycleRISC/Memory256x16.sch - Wed Mar 26 18:16:46 2025
-
+// maximum delay = 9ns
 `timescale 1ns / 1ps
 `define CYCLE_TIME 50.0
 module Memory256x16_Memory256x16_sch_tb();
