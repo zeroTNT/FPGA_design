@@ -1,7 +1,7 @@
 // Verilog test fixture created from schematic /home/ise/VMShare/MulticycleRISC/Memory256x16.sch - Wed Mar 26 18:16:46 2025
 
 `timescale 1ns / 1ps
-
+`define CYCLE_TIME 50.0
 module Memory256x16_Memory256x16_sch_tb();
 
 // Inputs
@@ -13,13 +13,11 @@ module Memory256x16_Memory256x16_sch_tb();
 // Output
    wire [15:0] MemOut;
 
-   reg clk;
    integer i;
 // Bidirs
-   initial begin
-      clk = 1'b0;
-   end
-   always #5 clk = ~clk;
+   real CYCLE = `CYCLE_TIME;
+   initial clk = 1'b0;
+   always #(CYCLE/2) clk = ~clk;
 
 // Instantiate the UUT
    Memory256x16 UUT (
