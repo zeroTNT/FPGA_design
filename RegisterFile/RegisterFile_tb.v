@@ -1,7 +1,7 @@
 // Verilog test fixture created from schematic /home/ise/VMShare/RF16bClkEn/RF16bClkEn.sch - Mon Mar 24 19:17:41 2025
 // maximum delay = 6.097ns
 `timescale 1ns / 1ps
-`define CYCLE_TIME 20.0
+`define CYCLE_TIME 50.0
 module RegisterFile_RegisterFile_sch_tb();
 
 // Inputs
