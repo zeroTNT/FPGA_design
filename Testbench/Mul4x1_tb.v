@@ -15,7 +15,7 @@ module Mul4x1_Mul4x1_sch_tb();
    wire F;
 
 // Bidirs
-   integer i;
+
 // Instantiate the UUT
    Mul4x1 UUT (
 		.addr(addr), 
