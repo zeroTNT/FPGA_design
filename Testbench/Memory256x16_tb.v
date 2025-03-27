@@ -39,7 +39,7 @@ module Memory256x16_Memory256x16_sch_tb();
    );
 // Initialize Inputs
    initial begin
-      Tbornot = 1'bx; tb = 25'hxxxxxxx;, pc = 25'hxxxxxxx;
+      Tbornot = 1'bx; tb = 25'hxxxxxxx; pc = 25'hxxxxxxx;
 	  for (i = 0; i <= 20; i = i+1) begin
 		 #20 Tbornot = $random(); tb = $random(); pc = $random();
 	  end
