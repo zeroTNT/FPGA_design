@@ -1,48 +1,48 @@
-// Verilog test fixture created from schematic /home/ise/VMShare/MulticycleRISC/Memory256x16.sch - Wed Mar 26 18:16:46 2025
-// maximum delay = 9ns
+// Verilog test fixture created from schematic /home/ise/VMShare/MulticycleRISC/Memory256x16.sch - Thu Mar 27 13:51:35 2025
+
 `timescale 1ns / 1ps
-`define CYCLE_TIME 50.0
+
 module Memory256x16_Memory256x16_sch_tb();
 
 // Inputs
    reg clk;
-   reg [15:0] Data;
-   reg [7:0] addr;
-   reg WE;
+   reg Tbornot;
+   reg [7:0] Addr_tb;
+   reg [7:0] Addr_pc;
+   reg [15:0] Data_tb;
+   reg [15:0] Data_pc;
+   reg WE_tb;
+   reg WE_pc;
+   
 
 // Output
    wire [15:0] MemOut;
 
-   integer i;
 // Bidirs
-   real CYCLE = `CYCLE_TIME;
-   initial clk = 1'b0;
-   always #(CYCLE/2) clk = ~clk;
-
+	reg [24:0] pc;
+	reg [24:0] tb;
+	always @(*) begin
+		{WE_tb, Addr_tb, Data_tb} = tb;
+		{WE_pc, Addr_pc, Data_pc} = pc;
+	end
 // Instantiate the UUT
    Memory256x16 UUT (
-		.MemOut(MemOut), 
 		.clk(clk), 
-		.Data(Data), 
-		.addr(addr), 
-		.WE(WE)
+		.Tbornot(Tbornot), 
+		.Addr_tb(Addr_tb), 
+		.Addr_pc(Addr_pc),
+		.Data_tb(Data_tb), 
+		.Data_pc(Data_pc),
+		.WE_tb(WE_tb), 
+		.WE_pc(WE_pc), 
+		.MemOut(MemOut)
    );
 // Initialize Inputs
    initial begin
-      addr = 16'bx; Data = 16'h0000; WE = 1'b0;
-      for (i = 0; i <= 20; i = i+1) begin
-         #20 addr = $random(); Data = $random(); WE = $random();
-         #20 Data = $random(); WE = 1'b1;
-      end
-      #10 WE = 1'b0;
-      @(negedge clk) #2 addr = 8'h00; Data = 16'h0000; WE = 1'b1;
-      @(negedge clk) #2 addr = 8'h10; Data = 16'h0111; WE = 1'b1;
-      @(negedge clk) #2 addr = 8'h20; Data = 16'h0222; WE = 1'b1;
-      @(negedge clk) #2 addr = 8'h30; Data = 16'h0333; WE = 1'b1;
-      @(negedge clk) #2 addr = 8'h40; Data = 16'h0444; WE = 1'b1;
-      @(negedge clk) #2 addr = 8'h50; Data = 16'h0555; WE = 1'b1;
-      @(negedge clk) #2 addr = 8'h60; Data = 16'h0666; WE = 1'b1;
-      @(negedge clk) #2 addr = 8'h70; Data = 16'h0777; WE = 1'b1;
-		#50 $finish;
+      Tbornot = 1'bx; tb = 25'hxxxxxxx;, pc = 25'hxxxxxxx;
+	  for (i = 0; i <= 20; i = i+1) begin
+		 #20 Tbornot = $random(); tb = $random(); pc = $random();
+	  end
+	  #50 $finish;
    end
 endmodule
