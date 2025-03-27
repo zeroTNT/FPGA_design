@@ -22,16 +22,18 @@ module Mul8b2x1_Mul8b2x1_sch_tb();
 		.F(F)
    );
 // Initialize Inputs
-   addr = 1'bx; D0 = 8'hxx; D1 = 8'hxx;
-   for (i = 0; i<50; i=i+1) begin
-      #20 addr = $random(); D1 = $random(); D0 = $random();
+   initial begin
+      addr = 1'bx; D0 = 8'hxx; D1 = 8'hxx;
+      for (i = 0; i<20; i=i+1) begin
+         #20 addr = $random(); D1 = $random(); D0 = $random();
+      end
+   	#20 D0 = 8'h55; D1 = 8'haa;
+   	#20 addr = 1'b0;
+      #20 addr = 1'b1;
+      #20 D1 = 8'hff;
+      #20 addr = 1'b0;
+      #20 D0 = 8'h00;
+   
+   	#50 $finish;
    end
-	#20 D0 = 8'h55; D1 = 8'haa;
-	#20 addr = 1'b0;
-   #20 addr = 1'b1;
-   #20 D1 = 8'hff;
-   #20 addr = 1'b0;
-   #20 D0 = 8'h00;
-
-	#50 $finish;
 endmodule
