@@ -1,5 +1,5 @@
 // Verilog test fixture created from schematic /home/ise/VMShare/MulticycleRISC/PCFA2c.sch - Thu Mar 27 07:11:21 2025
-
+// maximum delay = 6.5ns
 `timescale 1ns / 1ps
 
 module PCFA2c_PCFA2c_sch_tb();
@@ -13,7 +13,7 @@ module PCFA2c_PCFA2c_sch_tb();
    wire [7:0] Sum;
 
 // Bidirs
-
+   integer i;
 // Instantiate the UUT
    PCFA2c UUT (
 		.B(B), 
