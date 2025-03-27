@@ -1,7 +1,7 @@
 // Verilog test fixture created from schematic /home/ise/VMShare/MulticycleRISC/Memory256x16.sch - Thu Mar 27 13:51:35 2025
-
+// maximum delay = 8.200ns
 `timescale 1ns / 1ps
-`define CYCLES_TIME 50
+`define CYCLE_TIME 50.0
 module Memory256x16_Memory256x16_sch_tb();
 
 // Inputs
@@ -19,10 +19,9 @@ module Memory256x16_Memory256x16_sch_tb();
    wire [15:0] MemOut;
 
 // clock
-	reg clk;
 	real CYCLE = `CYCLE_TIME;
 	initial clk = 1'b0;
-	always #(CYCLES/2) clk = ~clk;
+	always #(CYCLE/2) clk = ~clk;
 // variables
 	integer i;
 	reg [24:0] pc;
@@ -46,8 +45,9 @@ module Memory256x16_Memory256x16_sch_tb();
 // Initialize Inputs
    initial begin
       Tbornot = 1'bx; tb = 25'hxxxxxxx; pc = 25'hxxxxxxx;
+	  #150;
 	  for (i = 0; i <= 20; i = i+1) begin
-		 #20 Tbornot = $random(); tb = $random(); pc = $random();
+		 @(negedge clk) #3 Tbornot = $random(); tb = $random(); pc = $random();
 	  end
 	  #50 $finish;
    end
