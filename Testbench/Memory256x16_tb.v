@@ -7,7 +7,7 @@ module Memory256x16_Memory256x16_sch_tb();
 // Inputs
    reg clk;
    reg [15:0] Data;
-   reg [15:0] addr;
+   reg [7:0] addr;
    reg WE;
 
 // Output
@@ -31,10 +31,18 @@ module Memory256x16_Memory256x16_sch_tb();
    initial begin
       addr = 16'bx; Data = 16'h0000; WE = 1'b0;
       for (i = 0; i <= 20; i = i+1) begin
-         #50 addr = $random(); Data = $random(); WE = $random();
-         #50 Data = $random(); WE = 1'b1;
+         #20 addr = $random(); Data = $random(); WE = $random();
+         #20 Data = $random(); WE = 1'b1;
       end
-
+      #10 WE = 1'b0;
+      @(negedge clk) #2 addr = 8'h00; Data = 16'h0000; WE = 1'b1;
+      @(negedge clk) #2 addr = 8'h10; Data = 16'h0111; WE = 1'b1;
+      @(negedge clk) #2 addr = 8'h20; Data = 16'h0222; WE = 1'b1;
+      @(negedge clk) #2 addr = 8'h30; Data = 16'h0333; WE = 1'b1;
+      @(negedge clk) #2 addr = 8'h40; Data = 16'h0444; WE = 1'b1;
+      @(negedge clk) #2 addr = 8'h50; Data = 16'h0555; WE = 1'b1;
+      @(negedge clk) #2 addr = 8'h60; Data = 16'h0666; WE = 1'b1;
+      @(negedge clk) #2 addr = 8'h70; Data = 16'h0777; WE = 1'b1;
 		#50 $finish;
    end
 endmodule
