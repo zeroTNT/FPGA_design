@@ -233,13 +233,20 @@ module RFplusALU_RFplusALU_sch_tb();
 
 		// MOV in ID stage: ALUinA = RF[ins[7:5]]
 		@(posedge clk)
-		{WBRF, WBresource, RBresource, OprandB, LI, Buff_IDEXE} = 6'b0x00x1;
+		{WBRF, WBresource, RBresource, OprandB, LI, Buff_IDEXE} = 6'b0xxxx1;
 		{PSW_C, ALUop, Flag} = 3'bxxx;
 		// MOV in WB stage: RF[ins[10:8]] = Sum
+		@(posedge clk)
+		{WBRF, WBresource, RBresource, OprandB, LI, Buff_IDEXE} = 6'b11xxx0;
+		{PSW_C, ALUop, Flag} = 3'bxxx;
 
-		// JAL in ID stage: ALUinA = PC, ALUinB = ins[7:0]
+		// JAL_Rlabel in ID stage: RF[ins[10:8]] = PC
+		@(posedge clk)
+		{WBRF, WBresource, RBresource, OprandB, LI, Buff_IDEXE} = 6'b0xxxx1;
+		{PSW_C, ALUop, Flag} = 3'bxxx;
+		// JAL_RR in ID stage: ALUinA = PC, ALUinB = RF[ins[4:2]]
 		// JR in ID stage: ALUinA = PC, ALUinB = RF[ins[7:5]]
-		// OutR in ID stage: ALUinA = RF[ins[7:5]], ALUinB = 0
+		// OutR in ID stage: ALUinA = RF[ins[7:5]]
 		#50 $finish;
 	end
 endmodule
