@@ -28,14 +28,14 @@ module Reg16bClkEn_Reg16bClkEn_sch_tb();
       D = 16'hxxxx;
 		clk_en = 'b0;
       repeat(3) @(posedge clk_n);
-      @(posedge clk_n) #3 D = 16'hdddd;
+      @(negedge clk_n) #3 D = 16'hdddd;
 		#10 clk_en = 'b1;
-      @(posedge clk_n) #3 D = 16'h1111;
-      @(posedge clk_n) #3 D = 16'h2222;
-      @(posedge clk_n) #3 D = 16'h4444;
-      @(posedge clk_n) #3 D = 16'h8888;
-      @(posedge clk_n) #3 D = 16'hcccc;
-      @(posedge clk_n) #3 D = 16'hffff;
+      @(negedge clk_n) #3 D = 16'h1111;
+      @(negedge clk_n) #3 D = 16'h2222;
+      @(negedge clk_n) #3 D = 16'h4444;
+      @(negedge clk_n) #3 D = 16'h8888;
+      @(negedge clk_n) #3 D = 16'hcccc;
+      @(negedge clk_n) #3 D = 16'hffff;
       #100 $finish;
    end
 endmodule

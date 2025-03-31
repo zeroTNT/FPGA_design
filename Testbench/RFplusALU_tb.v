@@ -1,15 +1,17 @@
 // Verilog test fixture created from schematic /home/ise/VMShare/MulticycleRISC/RFplusALU.sch - Sun Mar 30 08:29:19 2025
-
+// minimum setup time = 2ns
+// maximum setup time = 2ns
 `timescale 1ns / 1ps
-`define CYCLE_TIME 80
+`define CYCLE_TIME 50
 module RFplusALU_RFplusALU_sch_tb();
 
 // Inputs
 	reg clk;
 	reg Reset;
 	// RFplusALU data
-	reg [15:0] Ins;
+	reg [10:0] Ins;
    	reg [15:0] WBData;
+	reg [15:0] MEMData;
 	// ID control signals
 	reg WBRF;
    	reg WBresource;
@@ -32,10 +34,7 @@ module RFplusALU_RFplusALU_sch_tb();
    	wire [15:0] Sum;
    	wire C;
    	wire Z;
-   	wire N;
-
-	wire [15:0] ConcatedLHI;
-	wire [15:0] MulLI;
+	wire N;
 
 // Bidirs
 
@@ -46,13 +45,11 @@ module RFplusALU_RFplusALU_sch_tb();
 	always #(CYCLE/2) clk = ~clk;
 // Instantiate the UUT
 	RFplusALU UUT (
-		.ConcatedLHI(ConcatedLHI),
-		.MulLI(MulLI),
-
 		.clk(clk), 
 		.Reset(Reset), 
 		.Ins(Ins), 
-		.WBData(WBData), 
+		.WBData(WBData),
+		.MEMData(MEMData),
 		// RFplusALU ID stage output data
 		.Rm(Rm), 
 		.Rd(Rd),
@@ -77,191 +74,61 @@ module RFplusALU_RFplusALU_sch_tb();
 
 // Initialize Inputs
 	initial begin
-		// initial Register file data
+		// reset control signals
 		#150;
-		Ins = 16'h0000; WBData = 16'h0000;
+		@(negedge clk) Reset = 1'b1;
+		repeat(3) @(negedge clk) NOP_IDEXE;
+		Reset = 1'b0;
+
+		// initial Register file data
+		Ins = 11'h0000; WBData = 16'h0000; MEMData = 16'h0000;
+		{WBRF, WBresource, RBresource, OprandB, LI, Buff_IDEXE} = 6'b0;
+		{PSW_C, ALUop, Flag} = 3'b0;
 		for (i = 0; i < 8; i = i+1) begin
-			@(posedge clk) Buff_IDEXE = 1'b0; WBRF = 1'b1; WBresource = 1'b1; WBData = i; Ins[10:8] = i;
+			@(posedge clk) #3
+			WBRF = 1'b1; WBresource = 1'b0; 						// Enable WB from WBdata
+			RBresource = 1'b0; OprandB = 1'b0; Buff_IDEXE = 1'b1;	// Rn=Ins[4:2] is assigned to Oprand B
+			{PSW_C, ALUop, Flag} = i[2:0];
+			WBData = i+1; Ins[10:8] = i; Ins[7:5] = i; Ins[4:2] = i;
+			@(posedge clk) #3
+			{WBRF, WBresource, RBresource, OprandB, LI, Buff_IDEXE} = 6'b0;
+			//i=000:	Rdaddr = 0, Rddata = 1, Rmaddr = 0, Rnaddr = 0, Sum = Rm + Rn,			, PSW_C=0
+			//i=001:	Rdaddr = 1, Rddata = 2, Rmaddr = 1, Rnaddr = 1, Sum = Rm + Rn + PSW_C,	, PSW_C=0
+			//i=010:	Rdaddr = 2, Rddata = 3, Rmaddr = 2, Rnaddr = 2, Sum = Rm - Rn,			, PSW_C=0
+			//i=011:	Rdaddr = 3, Rddata = 4, Rmaddr = 3, Rnaddr = 3, Sum = Rm - Rn - ~PSW_C,	, PSW_C=0
+			//i=100:	Rdaddr = 4, Rddata = 5, Rmaddr = 4, Rnaddr = 4, Sum = Rm + Rn,			, PSW_C=1
+			//i=101:	Rdaddr = 5, Rddata = 6, Rmaddr = 5, Rnaddr = 5, Sum = Rm + Rn + PSW_C,	, PSW_C=1
+			//i=110:	Rdaddr = 6, Rddata = 7, Rmaddr = 6, Rnaddr = 6, Sum = Rm - Rn,			, PSW_C=1
+			//i=111:	Rdaddr = 7, Rddata = 8, Rmaddr = 7, Rnaddr = 7, Sum = Rm - Rn - ~PSW_C;	, PSW_C=1
 		end
 
-		// reset control signals
-		@(negedge clk) Reset = 1'b1;
-		repeat(3) @(negedge clk) begin
-		Ins = 16'hxxxx; WBData = 16'hxxxx; WBRF = 1'b0; Buff_IDEXE = 1'b0;
-		end
-		Reset = 1'b0;
-		// only verify possible control signals pattern with fixed input data
-		//1 LHI in ID stage: DataB = RF[ins[10:8]], LI_EXE = {ins[7:0], DataB}
-		@(posedge clk)
-		Ins = $random();	WBData = $random();
+		
+		//1 LHI: DataB = RF[ins[10:8]], LI_EXE = {ins[7:0], DataB}
+		@(posedge clk) #2;
+		Ins = {3'd1, 8'h55};	WBData = {16'h0404};
 		{WBRF, WBresource, RBresource, OprandB, LI, Buff_IDEXE} = 6'b0x1x11;
 		{PSW_C, ALUop, Flag} = 3'bxxx;
-		//2 LHI in WB stage: RF[ins[10:8]] = LI_EXE
-		@(posedge clk)
-		{WBRF, WBresource, RBresource, OprandB, LI, Buff_IDEXE} = 6'b11xxx0;
-		{PSW_C, ALUop, Flag} = 3'bxxx;
-
-		//3 LLI in ID stage: LI_EXE = {8'b0, ins[7:0]}
-		@(posedge clk)
+		NOP_IDEXE;
+		//2 LLI: LI_EXE = {8'b0, ins[7:0]}
+		@(posedge clk) #2;
+		Ins = {3'd1, 8'h44};	WBData = {16'h0404};
 		{WBRF, WBresource, RBresource, OprandB, LI, Buff_IDEXE} = 6'b0xxx01;
 		{PSW_C, ALUop, Flag} = 3'bxxx;
-		//4 LLI in WB stage: RF[ins[10:8]] = LI_EXE
-		@(posedge clk)
-		{WBRF, WBresource, RBresource, OprandB, LI, Buff_IDEXE} = 6'b11xxx0;
-		{PSW_C, ALUop, Flag} = 3'bxxx;
-
-		//5 LDR_RI in ID stage: ALUinA = RF[ins[7:5]], ALUinB = ins[4:0]
-		@(posedge clk)
-		{WBRF, WBresource, RBresource, OprandB, LI, Buff_IDEXE} = 6'b0xx1x1;
-		{PSW_C, ALUop, Flag} = 3'bxxx;
-		//6 LDR_RI in EXE stage: Sum = ALUinA + ALUinB
-		@(posedge clk)
-		{WBRF, WBresource, RBresource, OprandB, LI, Buff_IDEXE} = 6'b0xxxx0;
-		{PSW_C, ALUop, Flag} = 3'b100;
-		//7 LDR_RI in WB stage: RF[ins[10:8]] = MEM[Sum]
-		@(posedge clk)
-		{WBRF, WBresource, RBresource, OprandB, LI, Buff_IDEXE} = 6'b10xxx0;
-		{PSW_C, ALUop, Flag} = 3'bxxx;
-
-		//8 LDR_RR in ID stage: ALUinA = RF[ins[7:5]], ALUinB = RF[ins[4:2]]
-		@(posedge clk)
-		{WBRF, WBresource, RBresource, OprandB, LI, Buff_IDEXE} = 6'b0x00x1;
-		{PSW_C, ALUop, Flag} = 3'bxxx;
-		//9 LDR_RR in EXE stage: Sum = ALUinA + ALUinB
-		@(posedge clk)
-		{WBRF, WBresource, RBresource, OprandB, LI, Buff_IDEXE} = 6'b0xxxx0;
-		{PSW_C, ALUop, Flag} = 3'b100;
-		//10 LDR_RR in WB stage: RF[ins[10:8]] = MEM[Sum]
-		@(posedge clk)
-		{WBRF, WBresource, RBresource, OprandB, LI, Buff_IDEXE} = 6'b10xxx0;
-		{PSW_C, ALUop, Flag} = 3'bxxx;
-
-		//11 STR_RI in ID stage: ALUinA = RF[ins[7:5]], ALUinB = ins[4:0]
-		@(posedge clk)
-		{WBRF, WBresource, RBresource, OprandB, LI, Buff_IDEXE} = 6'b0xx1x1;
-		{PSW_C, ALUop, Flag} = 3'bxxx;
-		//12 STR_RI in EXE stage: Sum = ALUinA + ALUinB, DataB = RF[ins[10:8]]
-		@(posedge clk)
-		{WBRF, WBresource, RBresource, OprandB, LI, Buff_IDEXE} = 6'b0x1xx0;
-		{PSW_C, ALUop, Flag} = 3'b100;
-
-		//13 STR_RR in ID stage: ALUinA = RF[ins[7:5]], ALUinB = RF[ins[4:2]]
-		@(posedge clk)
-		{WBRF, WBresource, RBresource, OprandB, LI, Buff_IDEXE} = 6'b0x00x1;
-		{PSW_C, ALUop, Flag} = 3'bxxx;
-
-		//14 ADD in ID stage: ALUinA = RF[ins[7:5]], ALUinB = RF[ins[4:2]]
-		@(posedge clk)
-		{WBRF, WBresource, RBresource, OprandB, LI, Buff_IDEXE} = 6'b0xx0x1;
-		{PSW_C, ALUop, Flag} = 3'bxxx;
-		//15 ADD in EXE stage: Sum = ALUinA + ALUinB
-		@(posedge clk)
-		{WBRF, WBresource, RBresource, OprandB, LI, Buff_IDEXE} = 6'b0xxxx0;
-		{PSW_C, ALUop, Flag} = 3'b100;
-		//16 ADD in WB stage: RF[ins[10:8]] = Sum
-		@(posedge clk)
-		{WBRF, WBresource, RBresource, OprandB, LI, Buff_IDEXE} = 6'b11xxx0;
-		{PSW_C, ALUop, Flag} = 3'bxxx;
-
-		//17 ADC in ID stage: ALUinA = RF[ins[7:5]], ALUinB = RF[ins[4:2]]
-		@(posedge clk)
-		{WBRF, WBresource, RBresource, OprandB, LI, Buff_IDEXE} = 6'b0x00x1;
-		{PSW_C, ALUop, Flag} = 3'bxxx;
-		//18 ADC in EXE stage: Sum = ALUinA + ALUinB + PSW_C
-		@(posedge clk)
-		{WBRF, WBresource, RBresource, OprandB, LI, Buff_IDEXE} = 6'b0xxxx0;
-		{PSW_C, ALUop, Flag} = 3'b101;
-		//19 ADC in WB stage: RF[ins[10:8]] = Sum
-		@(posedge clk)
-		{WBRF, WBresource, RBresource, OprandB, LI, Buff_IDEXE} = 6'b11xxx0;
-		{PSW_C, ALUop, Flag} = 3'bxxx;
-
-		//20 SUB in ID stage: ALUinA = RF[ins[7:5]], ALUinB = RF[ins[4:2]]
-		@(posedge clk)
-		{WBRF, WBresource, RBresource, OprandB, LI, Buff_IDEXE} = 6'b0x00x1;
-		{PSW_C, ALUop, Flag} = 3'bxxx;
-		//21 SUB in EXE stage: Sum = ALUinA - ALUinB
-		@(posedge clk)
-		{WBRF, WBresource, RBresource, OprandB, LI, Buff_IDEXE} = 6'b0xxxx0;
-		{PSW_C, ALUop, Flag} = 3'b010;
-		//22 SUB in WB stage: RF[ins[10:8]] = Sum
-		@(posedge clk)
-		{WBRF, WBresource, RBresource, OprandB, LI, Buff_IDEXE} = 6'b11xxx0;
-		{PSW_C, ALUop, Flag} = 3'bxxx;
-
-		//23 SBB in ID stage: ALUinA = RF[ins[7:5]], ALUinB = RF[ins[4:2]]
-		@(posedge clk)
-		{WBRF, WBresource, RBresource, OprandB, LI, Buff_IDEXE} = 6'b0x00x1;
-		{PSW_C, ALUop, Flag} = 3'bxxx;
-		//24 SBB in EXE stage: Sum = ALUinA - ALUinB - PSW_C
-		@(posedge clk)
-		{WBRF, WBresource, RBresource, OprandB, LI, Buff_IDEXE} = 6'b0xxxx0;
-		{PSW_C, ALUop, Flag} = 3'b011;
-		//25 SBB in WB stage: RF[ins[10:8]] = Sum
-		@(posedge clk)
-		{WBRF, WBresource, RBresource, OprandB, LI, Buff_IDEXE} = 6'b11xxx0;
-		{PSW_C, ALUop, Flag} = 3'bxxx;
-
-		//26 CMP in ID stage: ALUinA = RF[ins[7:5]], ALUinB = RF[ins[4:2]]
-		@(posedge clk)
-		{WBRF, WBresource, RBresource, OprandB, LI, Buff_IDEXE} = 6'b0x00x1;
-		{PSW_C, ALUop, Flag} = 3'bxxx;
-		//27 CMP in EXE stage: Sum = ALUinA - ALUinB
-		@(posedge clk)
-		{WBRF, WBresource, RBresource, OprandB, LI, Buff_IDEXE} = 6'b0xxxx0;
-		{PSW_C, ALUop, Flag} = 3'b010;
-
-		//28 ADDI in ID stage: ALUinA = RF[ins[7:5]], ALUinB = ins[4:0]
-		@(posedge clk)
-		{WBRF, WBresource, RBresource, OprandB, LI, Buff_IDEXE} = 6'b0xx1x1;
-		{PSW_C, ALUop, Flag} = 3'bxxx;
-		//29 ADDI in EXE stage: Sum = ALUinA + ALUinB
-		@(posedge clk)
-		{WBRF, WBresource, RBresource, OprandB, LI, Buff_IDEXE} = 6'b0xxxx0;
-		{PSW_C, ALUop, Flag} = 3'b100;
-		//30 ADDI in WB stage: RF[ins[10:8]] = Sum
-		@(posedge clk)
-		{WBRF, WBresource, RBresource, OprandB, LI, Buff_IDEXE} = 6'b11xxx0;
-		{PSW_C, ALUop, Flag} = 3'bxxx;
-
-		//31 SUBI in ID stage: ALUinA = RF[ins[7:5]], ALUinB = ins[4:0]
-		@(posedge clk)
-		{WBRF, WBresource, RBresource, OprandB, LI, Buff_IDEXE} = 6'b0xx1x1;
-		{PSW_C, ALUop, Flag} = 3'bxxx;
-		//32 SUBI in EXE stage: Sum = ALUinA - ALUinB
-		@(posedge clk)
-		{WBRF, WBresource, RBresource, OprandB, LI, Buff_IDEXE} = 6'b0xxxx0;
-		{PSW_C, ALUop, Flag} = 3'b010;
-		//33 SUBI in WB stage: RF[ins[10:8]] = Sum
-		@(posedge clk)
-		{WBRF, WBresource, RBresource, OprandB, LI, Buff_IDEXE} = 6'b11xxx0;
-		{PSW_C, ALUop, Flag} = 3'bxxx;
-
-		//34 MOV in ID stage: ALUinA = RF[ins[7:5]]
-		@(posedge clk)
-		{WBRF, WBresource, RBresource, OprandB, LI, Buff_IDEXE} = 6'b0xxxx1;
-		{PSW_C, ALUop, Flag} = 3'bxxx;
-		//35 MOV in WB stage: RF[ins[10:8]] = Sum
-		@(posedge clk)
-		{WBRF, WBresource, RBresource, OprandB, LI, Buff_IDEXE} = 6'b11xxx0;
-		{PSW_C, ALUop, Flag} = 3'bxxx;
-
-		//36 JAL_Rlabel in ID stage: RF[ins[10:8]] = PC+1
-		@(posedge clk)
-		{WBRF, WBresource, RBresource, OprandB, LI, Buff_IDEXE} = 6'b11xxx0;
-		{PSW_C, ALUop, Flag} = 3'bxxx;
-		//37 JAL_RR in ID stage: RF[ins[10:8]] = PC+1, PC = RF[ins[7:5]]
-		@(posedge clk)
-		{WBRF, WBresource, RBresource, OprandB, LI, Buff_IDEXE} = 6'b11xxx0;
-		{PSW_C, ALUop, Flag} = 3'bxxx;
-		//38 JR in ID stage: PC = RF[ins[10:8]]
-		@(posedge clk)
+		NOP_IDEXE;
+		//3 LDR: RF[Ins[10:8]] = MEMData, then read out RF[Ins[10:8]]
+		Ins = {3'd1, 8'h44};	WBData = {16'h0404};	MEMData = {16'h1100};
 		{WBRF, WBresource, RBresource, OprandB, LI, Buff_IDEXE} = 6'b111xx0;
 		{PSW_C, ALUop, Flag} = 3'bxxx;
-		//39 OutR in ID stage: ALUinA = RF[ins[7:5]]
-		@(posedge clk)
-		{WBRF, WBresource, RBresource, OprandB, LI, Buff_IDEXE} = 6'b0xxxx1;
-		{PSW_C, ALUop, Flag} = 3'bxxx;
+		NOP_IDEXE;
 		#50 $finish;
 	end
+
+	task NOP_IDEXE;
+		begin
+			@(posedge clk) #2;
+			// equivalent to idle operation
+			WBRF = 1'b0; Buff_IDEXE = 1'b0;
+			Ins = 16'hxxxx; WBData = 16'hxxxx; MEMData = 16'hxxxx;
+		end
+	endtask
 endmodule
