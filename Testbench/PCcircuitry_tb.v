@@ -5,15 +5,15 @@
 module PCcircuitry_PCcircuitry_sch_tb();
 
 // Inputs
-   reg [7:0] Rm;
-   reg [7:0] PC;
-   reg [7:0] Rd;
+   reg [15:0] Rm;
+   reg [15:0] PC;
+   reg [15:0] Rd;
    reg Branch;
-   reg [7:0] Ins;
+   reg [10:0] Ins;
    reg [1:0] Jump;
 
 // Output
-   wire [7:0] nextPC;
+   wire [15:0] nextPC;
 
 // Bidirs
 
@@ -29,22 +29,22 @@ module PCcircuitry_PCcircuitry_sch_tb();
    );
 // Initialize Inputs
 	initial begin
-		Jump = 2'bxx; Branch = 1'bx; PC = 8'hxx; Ins = 8'hxx; Rm = 8'hxx; Rd = 8'hxx;
+		Jump = 2'bxx; Branch = 1'bx; PC = 16'hx; Ins = 10'hx; Rm = 16'hx; Rd = 16'hx;
 		// PC + 1
-		#20 PC = $random(); Ins = 8'h0; Branch = 1'b0; Jump = 2'b0;
+		#20 PC = $random(); Ins = 10'h0; Branch = 1'b0; Jump = 2'b0;
 		// Branch
-		#20 Ins = 8'h3; Branch = 1'b1; Jump = 2'b0;
+		#20 Ins = 10'h0003; Branch = 1'b1; Jump = 2'b0;
 
 		// jal label
 		// control signals are same as branch
 		#20 Branch = 1'b1; Jump = 2'b00;
-
+		PC = 16'haaaa; Ins = 10'h155;
 		// jmp
 		#20 Branch = 1'bx; Jump = 2'b01;
 		// jal Rm
-		#20 Rm = 8'h55; Branch = 1'bx; Jump = 2'b10;
+		#20 Rm = 16'h0055; Branch = 1'bx; Jump = 2'b10;
 		// jal Rd
-		#20 Rd = 8'h22; Branch = 1'bx; Jump = 2'b11;
+		#20 Rd = 16'h0022; Branch = 1'bx; Jump = 2'b11;
 		#50 $finish;
 	end
 endmodule
