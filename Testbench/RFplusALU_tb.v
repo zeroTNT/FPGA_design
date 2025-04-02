@@ -26,8 +26,8 @@ module RFplusALU_RFplusALU_sch_tb();
 
 // Output
 	// ID output data
-	wire [7:0] Rm;
-   	wire [7:0] Rd;
+	wire [15:0] Rm;
+   	wire [15:0] Rd;
 	// EXE output data
    	wire [15:0] LI_EXE;
 	wire [15:0] OutR;
