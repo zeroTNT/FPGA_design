@@ -9,10 +9,7 @@ module Datapath_Datapath_sch_tb();
    reg Rst;
 	reg Buff_PC;
 	reg Buff_MEMIns;
-   reg Buff_MEMRF;
-	reg Buff_RFALU;
 	reg Buff_PSW;
-	reg Buff_ALUMEM;
 
 	reg WE_MEM;
 	reg MEMresource;
@@ -55,15 +52,14 @@ module Datapath_Datapath_sch_tb();
 	reg [3:0] ALU_control;
 	reg [2:0] PC_control;
 	always @(*) begin
-		{ALUorNot, LIorMOV, MEMresource, WE_MEM, Buff_MEMRF, Buff_MEMIns} = MEM_control;
-		{WBresource, RBresource, oprandB, LI, PCplus1orWB, WE_RF, Buff_RFALU} = RF_control;
-		{Flag, ALUop, Buff_ALUMEM, Buff_PSW} = ALU_control;
+		{ALUorNot, LIorMOV, MEMresource, WE_MEM, Buff_MEMIns} = MEM_control;
+		{WBresource, RBresource, oprandB, LI, PCplus1orWB, WE_RF} = RF_control;
+		{Flag, ALUop, Buff_PSW} = ALU_control;
 		{Jump[1:0], Branch} = PC_control;
 	end
 // Instantiate the UUT
    Datapath UUT (
 		.OutR(OutR), 
-		.Buff_ALUMEM(Buff_ALUMEM), 
 		.Buff_PSW(Buff_PSW), 
 		.clk(clk), 
 		.Buff_PC(Buff_PC), 
@@ -74,7 +70,6 @@ module Datapath_Datapath_sch_tb();
 		.WBresource(WBresource), 
 		.oprandB(oprandB), 
 		.LI(LI), 
-		.Buff_RFALU(Buff_RFALU), 
 		.Branch(Branch), 
 		.Jump(Jump), 
 		.LIorMOV(LIorMOV), 
@@ -86,7 +81,6 @@ module Datapath_Datapath_sch_tb();
 		.MEMAddr_tb(MEMAddr_tb), 
 		.MEMData_tb(MEMData_tb), 
 		.TBorNot(TBorNot), 
-		.Buff_MEMRF(Buff_MEMRF), 
 		.Buff_MEMIns(Buff_MEMIns), 
 		.PCplus1orWB(PCplus1orWB), 
 		.opcode(opcode), 
@@ -103,29 +97,26 @@ module Datapath_Datapath_sch_tb();
 		MEMData_tb = data;
 		end
 	endtask
-	task InitMEM_RF;
+	task Start_Process;
 		Rst = 1'b0;
-		repeat (3) @(posedge clk) #3 Rst = 1'b1;
+		repeat (3) @(posedge clk) #3 begin
+			Rst = 1'b1;
+			WE_MEM = 1'b0; WE_RF = 1'b0;
+			Buff_PC = 1'b0; Buff_MEMIns = 1'b0; Buff_PSW = 1'b0;
+		end
 		Rst = 1'b0;
+		Buff_PC = 1'b1; Buff_MEMIns = 1'b1; Buff_PSW = 1'b0;
 	endtask
 	task Op_LHI;
-		@(posedge clk) #3 MEM_control = 6'bxx0011; Buff_PC = 1'b0;
-		@(posedge clk) #3 RF_control = 7'bx1x1x01; PC_control = 3'b000;
-		@(posedge clk) #3 ALU_control = 4'bxx10;
-		@(posedge clk) #3 MEM_control = 6'b10x010;
-		@(posedge clk) #3 RF_control = 7'b 0xxx110; Buff_PC = 1'b1;
+		@(posedge clk) #3 MEM_control = 5'bxx001; Buff_PC = 1'b0;
+		@(posedge clk) #3 RF_control = 6'bx1x1x0; PC_control = 3'b000;
+		@(posedge clk) #3 ALU_control = 3'bxx0;
+		@(posedge clk) #3 MEM_control = 5'b10x00;
+		@(posedge clk) #3 RF_control = 6'b0xxx11; Buff_PC = 1'b1;
 	endtask
-	task Op_LLI;
-		@(posedge clk) #3 MEM_control = 6'bxx0011; Buff_PC = 1'b0;
-		@(posedge clk) #3 RF_control = 7'bxxx0x01; PC_control = 3'b000;
-		@(posedge clk) #3 ALU_control = 4'bxx10;
-		@(posedge clk) #3 MEM_control = 6'b10x010;
-		@(posedge clk) #3 RF_control = 7'b 0xxx110; Buff_PC = 1'b1;
-	endtask
-
 	task Op_HLT;
-		@(posedge clk) #3 MEM_control = 6'bxx0011; Buff_PC = 1'b0;
-		@(posedge clk) #3 RF_control = 7'bxxxxx00; PC_control = 3'b000;
+		@(posedge clk) #3 MEM_control = 5'bxx0011; Buff_PC = 1'b0;
+		@(posedge clk) #3 RF_control = 6'bxxxxx00; PC_control = 3'b000;
 		@(posedge clk) #3; $display("Operation HLT accepted, PC stop counting.")
 	endtask
 endmodule
