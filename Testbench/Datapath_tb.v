@@ -106,11 +106,11 @@ module Datapath_Datapath_sch_tb();
 		TBorNot = 1'b1; Buff_PC = 1'b1;
 		WriteMEM(16'h0000, {5'b0, 3'd1, 8'hFF}); //R1 = 00FF
 		WriteMEM(16'h0001, {5'b0, 3'd1, 8'hFF}); //R1 = FFFF = -1
-		WriteMEM(16'h0002, {5'b0, 3'd2, 8'hF1}); //R2 = F1
-		WriteMEM(16'h0003, {5'b0, 3'd3, 3'd2, 3'd1, 2'b00}); // SUB R3, R2, R1
-		WriteMEM(16'h0004, {5'b0, 3'd0, 3'd3, 3'd0, 2'b00}); // OutR = R3 = F2, C = 0
-		WriteMEM(16'h0005, {5'b0, 3'd4, 3'd3, 3'd2, 2'b00}); // SBB R4, R3, R2
-		WriteMEM(16'h0006, {5'b0, 3'd0, 3'd4, 3'd0, 2'b00}); // OutR = R4 = 0
+		WriteMEM(16'h0002, {5'b0, 3'd2, 8'hF2}); //R2 = F2 = 242
+		WriteMEM(16'h0003, {5'b0, 3'd3, 3'd1, 5'b00101}); // ADDI R3, R1, 5
+		WriteMEM(16'h0004, {5'b0, 3'd0, 3'd3, 3'd0, 2'b00}); // OutR = R3 = 4
+		WriteMEM(16'h0005, {5'b0, 3'd4, 3'd2, 5'b01001}); // SUBI R4, R2, 9
+		WriteMEM(16'h0006, {5'b0, 3'd0, 3'd4, 3'd0, 2'b00}); // OutR = R4 = E9
 		WriteMEM(16'h0007, {5'b0, 9'b0, 2'b01});
 		// data
 		WriteMEM(16'h000A, 16'h007C);
@@ -127,9 +127,9 @@ module Datapath_Datapath_sch_tb();
 		Op_LLI;
 		Op_LHI;
 		Op_LLI;
-		Op_SUB;
+		Op_ADDI;
 		Op_OutR;
-		Op_SBB;
+		Op_SUBI;
 		Op_OutR;
 		Op_HLT;
 		wait(done);
@@ -242,6 +242,24 @@ module Datapath_Datapath_sch_tb();
 			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
 			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bx00xx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
 			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bxxxxx0;  ALU_control = 3'b111; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'b0xx00; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'b0xxx11;  ALU_control = 3'bxx0; PC_control = 4'b0001;
+		end
+	endtask
+	task Op_ADDI;
+		begin
+			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bxx1xx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bxxxxx0;  ALU_control = 3'b001; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'b0xx00; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'b0xxx11;  ALU_control = 3'bxx0; PC_control = 4'b0001;
+		end
+	endtask
+	task Op_SUBI;
+		begin
+			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bxx1xx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bxxxxx0;  ALU_control = 3'b011; PC_control = 4'b0000;
 			@(posedge clk) #3 MEM_control = 5'b0xx00; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
 			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'b0xxx11;  ALU_control = 3'bxx0; PC_control = 4'b0001;
 		end
