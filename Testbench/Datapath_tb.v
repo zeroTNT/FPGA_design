@@ -104,16 +104,14 @@ module Datapath_Datapath_sch_tb();
 		// The opcode is meanless in this testbench, but Reg/Imm is need.
 		// ins
 		TBorNot = 1'b1; Buff_PC = 1'b1;
-		WriteMEM(16'h0000, {5'b0, 3'd1, 8'hFA}); //R1 = FA
-		WriteMEM(16'h0001, {5'b0, 3'd1, 8'hFF}); //R1 = FFFA
-		WriteMEM(16'h0002, {5'b0, 3'd2, 8'h03}); //R2 = 3
-		WriteMEM(16'h0003, {5'b0, 3'd1, 3'd2, 3'd1, 2'b01}); //ADD R1, R2, R1
-		WriteMEM(16'h0004, {5'b0, 3'd0, 3'd1, 3'd0, 2'b00}); //OutR R1
-		WriteMEM(16'h0005, {8'b0000_0000, 8'h03}); //BEQ 3
-		WriteMEM(16'h0006, {8'b0000_0000, 8'hFD}); //BNE -3
-		WriteMEM(16'h0007, {5'b0, 9'b0, 2'b01}); //HLT
-		WriteMEM(16'h0008, {8'b0000_0000, 8'hFF}); //BAL -1
-		// 012345634587
+		WriteMEM(16'h0000, {5'b0, 3'd0, 8'h0A}); //R0 = A = 10
+		WriteMEM(16'h0001, {5'b0, 3'd1, 8'h05}); //R1 = 5
+		WriteMEM(16'h0002, {5'b0, 3'd0, 3'd0, 3'd0, 2'b0}); //OutR R0
+		WriteMEM(16'h0003, {5'b0, 3'd0, 3'd1, 3'd0, 2'b0}); //OutR R1
+		WriteMEM(16'h0004, {5'b0, 3'd0, 3'd1, 3'd0, 2'b0}); //CMP R1, R0
+		WriteMEM(16'h0005, {5'b0, 3'd0, 3'd1, 3'd0, 2'b0}); //OutR R1
+		WriteMEM(16'h0006, {5'b0, 9'b0, 2'b01}); //HLT
+		// 0126354
 		// data
 		WriteMEM(16'h00F0, 16'h007C);
 		// Ensure data wrote into memory successully
@@ -127,16 +125,11 @@ module Datapath_Datapath_sch_tb();
 		// Simulate control signals send from Controller
 		// Task is ordered according to operation in reality
 		Op_LLI;
-		Op_LHI;
 		Op_LLI;
-		Op_ADD;
 		Op_OutR;
-		Op_BEQ;
-		Op_BNE;
-		Op_ADD;
 		Op_OutR;
-		Op_BEQ;
-		Op_BAL;
+		Op_CMP;
+		Op_OutR;
 		Op_HLT;
 		wait(done);
 		$finish;
@@ -252,6 +245,13 @@ module Datapath_Datapath_sch_tb();
 			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'b0xxx11;  ALU_control = 3'bxx0; PC_control = 4'b0001;
 		end
 	endtask
+	task Op_CMP;
+		begin
+			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bx00xx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bxxxxx0;  ALU_control = 3'b011; PC_control = 4'b0001;
+		end
+	endtask
 	task Op_ADDI;
 		begin
 			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
@@ -307,6 +307,30 @@ module Datapath_Datapath_sch_tb();
 		begin
 			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
 			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = {1'b1, 2'b0, 1'b1};
+		end
+	endtask
+	task Op_JMP;
+		begin
+			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = {1'bx, 2'b01, 1'b1};
+		end
+	endtask
+	task Op_JALrl;
+		begin
+			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'b0xxx01;  ALU_control = 3'bxx0; PC_control = {1'b1, 2'b0, 1'b1};
+		end
+	endtask
+	task Op_JALrr;
+		begin
+			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'b0xxx01;  ALU_control = 3'bxx0; PC_control = {1'bx, 2'b10, 1'b1};
+		end
+	endtask
+	task Op_JR;
+		begin
+			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bx1xxx0;  ALU_control = 3'bxx0; PC_control = {1'bx, 2'b11, 1'b1};
 		end
 	endtask
 	task Op_OutR;
