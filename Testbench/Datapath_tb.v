@@ -104,14 +104,16 @@ module Datapath_Datapath_sch_tb();
 		// The opcode is not work in this testbench, but Reg addr is need.
 		// ins
 		TBorNot = 1'b1; Buff_PC = 1'b1;
-		WriteMEM(16'h0000, 16'h0002); //R0 = 2
-		WriteMEM(16'h0001, {5'b0, 3'd4, 3'd0, 5'b01000}); // R4 = MEM[R0+8] = MEM[A] = 6A
-		WriteMEM(16'h0002, {5'b0, 3'd0, 3'd4, 3'd0, 2'b00}); // OutR = R4 = 6A
-		WriteMEM(16'h0003, {5'b0, 9'b0, 2'b01});
+		WriteMEM(16'h0000, {5'b0, 3'd1, 8'hAA}); //R1 = AA
+		WriteMEM(16'h0001, {5'b0, 3'd2, 8'h08}); //R2 = 8
+		WriteMEM(16'h0002, {5'b0, 3'd1, 3'd2, 5'b00010}); // MEM[Rm+imm5] = Rd = MEM[8+2] = AA
+		WriteMEM(16'h0003, {5'b0, 3'd3, 3'd0, 5'b01010}); //R3 = 8
+		WriteMEM(16'h0004, {5'b0, 3'd0, 3'd3, 3'd0, 2'b00}); // OutR = R3 = AA
+		WriteMEM(16'h0005, {5'b0, 9'b0, 2'b01});
 		// data
-		WriteMEM(16'h000A, 16'h006A);
+		WriteMEM(16'h000A, 16'h007C);
 		// Ensure data wrote into memory successully
-		for (i = 0; i < 7; i = i+1) begin
+		for (i = 0; i < 10; i = i+1) begin
 			@(posedge clk) #3 begin
 				Tb_MEMWE = 1'b0; Tb_MEMAddr = i;
 			end
@@ -121,6 +123,8 @@ module Datapath_Datapath_sch_tb();
 		// Simulate control signals send from Controller
 		// Task is ordered according to operation in MEM
 		Op_LLI;
+		Op_LLI;
+		Op_STRri;
 		Op_LDRri;
 		Op_OutR;
 		Op_HLT;
@@ -175,6 +179,23 @@ module Datapath_Datapath_sch_tb();
 			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bxxxxx0;  ALU_control = 3'b000; PC_control = 4'b0000;
 			@(posedge clk) #3 MEM_control = 5'bxx100; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
 			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'b1xxxx1;  ALU_control = 3'bxx0; PC_control = 4'b0001;
+		end
+	endtask
+	task Op_LDRrr;
+		begin
+			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bx00xx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bxxxxx0;  ALU_control = 3'b000; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxx100; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'b1xxxx1;  ALU_control = 3'bxx0; PC_control = 4'b0001;
+		end
+	endtask
+	task Op_STRri;
+		begin
+			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bxx1xx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bx1xxx0;  ALU_control = 3'b000; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxx110; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0001;
 		end
 	endtask
 	task Op_OutR;
