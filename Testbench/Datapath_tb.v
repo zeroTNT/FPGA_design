@@ -104,15 +104,16 @@ module Datapath_Datapath_sch_tb();
 		// The opcode is meanless in this testbench, but Reg/Imm is need.
 		// ins
 		TBorNot = 1'b1; Buff_PC = 1'b1;
-		WriteMEM(16'h0000, {5'b0, 3'd1, 8'hFB}); //R1 = FB
-		WriteMEM(16'h0001, {5'b0, 3'd1, 8'hFF}); //R1 = FFFB
+		WriteMEM(16'h0000, {5'b0, 3'd1, 8'hFA}); //R1 = FA
+		WriteMEM(16'h0001, {5'b0, 3'd1, 8'hFF}); //R1 = FFFA
 		WriteMEM(16'h0002, {5'b0, 3'd2, 8'h03}); //R2 = 3
 		WriteMEM(16'h0003, {5'b0, 3'd1, 3'd2, 3'd1, 2'b01}); //ADD R1, R2, R1
 		WriteMEM(16'h0004, {5'b0, 3'd0, 3'd1, 3'd0, 2'b00}); //OutR R1
-		WriteMEM(16'h0005, {8'b0000_0000, 8'h02}); //BCS 2
-		WriteMEM(16'h0006, {8'b0000_0000, 8'hFD}); //BCC -3
+		WriteMEM(16'h0005, {8'b0000_0000, 8'h03}); //BEQ 3
+		WriteMEM(16'h0006, {8'b0000_0000, 8'hFD}); //BNE -3
 		WriteMEM(16'h0007, {5'b0, 9'b0, 2'b01}); //HLT
-		// 01234563457
+		WriteMEM(16'h0008, {8'b0000_0000, 8'hFF}); //BAL -1
+		// 012345634587
 		// data
 		WriteMEM(16'h00F0, 16'h007C);
 		// Ensure data wrote into memory successully
@@ -130,11 +131,12 @@ module Datapath_Datapath_sch_tb();
 		Op_LLI;
 		Op_ADD;
 		Op_OutR;
-		Op_BCS;
-		Op_BCC;
+		Op_BEQ;
+		Op_BNE;
 		Op_ADD;
 		Op_OutR;
-		Op_BCS;
+		Op_BEQ;
+		Op_BAL;
 		Op_HLT;
 		wait(done);
 		$finish;
@@ -304,7 +306,7 @@ module Datapath_Datapath_sch_tb();
 	task Op_BAL;
 		begin
 			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = {1'b0, 2'b0, 1'b1};
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = {1'b1, 2'b0, 1'b1};
 		end
 	endtask
 	task Op_OutR;
