@@ -1,15 +1,17 @@
-// Verilog test fixture created from schematic /home/ise/VMShare/MulticycleRISC/Signal_LIorMOV.sch - Sat Apr  5 12:32:38 2025
+// Verilog test fixture created from schematic /home/ise/VMShare/MulticycleRISC/Signal_WE_MEM.sch - Sat Apr  5 18:47:49 2025
 
 `timescale 1ns / 1ps
 `define CYCLE_TIME 50.0
-module Signal_LIorMOV_Signal_LIorMOV_sch_tb();
+module Signal_WE_MEM_Signal_WE_MEM_sch_tb();
 
 // Inputs
-   reg [15:11] InsM;
    reg [2:0] Cnt;
+   reg Rst;
+   reg [15:11] InsM;
+   reg [1:0] InsL;
 
 // Output
-   wire LIorMOV;
+   wire WE_MEM;
 
 // Parameters
    parameter [5:0]   LHI = 6'h01, LLI = 6'h02, LDRri = 6'h03, LDRrr = 6'h04, STRri = 6'h05, STRrr = 6'h06,
@@ -25,46 +27,67 @@ module Signal_LIorMOV_Signal_LIorMOV_sch_tb();
    initial clk = 1'b0;
    always #(CYCLE/2) clk = ~clk;
 // Net, Variable
-   reg [1:0] InsL;
-   integer i;
+   //reg [1:0] InsL;
+   //reg [15:11] InsM;
+   //reg [2:0] Cnt;
+   //reg Rst;
    wire Buff_PC;
+
+   integer i;
    reg [5:0] Ins;
    reg [15:8] OPM;
    reg [1:0] OPL;
+   
    initial Cnt = 3'b000;
+   // Synchronous Reset Cnt with Buff_PC
    always @(posedge clk) begin
       #3 
-      if(Buff_PC == 1'b1) Cnt = 3'b000;
+      if((Buff_PC == 1'b1) || (Rst == 1'b1)) Cnt = 3'b000;
       else Cnt = Cnt + 1;
    end
-
 // Instantiate the UUT
-   Signal_LIorMOV UUT (
+   Signal_WE_MEM UUT (
+		.Cnt(Cnt), 
+		.Rst(Rst), 
 		.InsM(InsM), 
-		.Cnt(Cnt), 
-		.LIorMOV(LIorMOV)
+		.InsL(InsL), 
+		.WE_MEM(WE_MEM)
    );
-   Signal_Buff_PC PCSignal (
+   // Instantiate the UUT
+   Signal_Buff_PC PCU (
 		.Cnt(Cnt), 
+      .Rst(Rst),
 		.InsM(InsM), 
 		.InsL(InsL), 
 		.Buff_PC(Buff_PC)
    );
 // Initialize Inputs
    initial begin
-      Ins = 6'b000000;
+      #150
+      Ins = 6'h18;
       OPM = 8'b00000000;
       OPL = 2'b00;
-      for (i = 1; i < 6'h1A; i = i + 1) begin
+      Rst = 1'b1;
+      repeat(2) @(posedge clk) #3;
+      InsConvert(Ins, OPM, OPL);
+      repeat(1) @(posedge clk) #3;
+      Rst = 1'b0;
+
+      for (i = 1; i < 6'h1D; i = i + 1) begin
          Ins = i;
+         InsConvert(Ins, OPM, OPL);
+         // Controller recieve Ins when Cnt == 3'b001
          @(posedge clk) #3;
-         InsCovet(Ins, OPM, OPL);
-         repeat(4) @(posedge clk) #3;
+         InsM = OPM[15:11];
+         InsL = OPL[1:0];
+         while (Buff_PC == 1'b0) begin
+            @(posedge clk) #3;
+         end
       end
       $finish;
    end
 // task
-   task InsCovet;
+   task InsConvert;
       input [5:0] Ins;
       output [15:8] OpM;
       output [1:0] OpL;
@@ -177,5 +200,4 @@ module Signal_LIorMOV_Signal_LIorMOV_sch_tb();
          endcase
       end
    endtask
-
 endmodule

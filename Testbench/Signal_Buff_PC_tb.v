@@ -27,8 +27,8 @@ module Signal_Buff_PC_Signal_Buff_PC_sch_tb();
    initial clk = 1'b0;
    always #(CYCLE/2) clk = ~clk;
 // Net, Variable
-   //reg [1:0] InsL;
    //reg [15:11] InsM;
+   //reg [1:0] InsL;
    //reg [2:0] Cnt;
    //reg Rst;
    //wire Buff_PC;

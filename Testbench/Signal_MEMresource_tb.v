@@ -32,17 +32,6 @@ module Signal_MEMresource_Signal_MEMresource_sch_tb();
    reg [5:0] Ins;
    reg [15:8] OPM;
    reg [1:0] OPL;
-   always @(posedge clk) begin
-      #3
-      if(Cnt == 3'b0) begin
-         InsM = OPM[15:11];
-         InsL = OPL[1:0];
-      end
-      else begin
-         InsM = InsM;
-         InsL = InsL;
-      end
-   end
    initial Cnt = 3'b000;
    always @(posedge clk) begin
       #3 
