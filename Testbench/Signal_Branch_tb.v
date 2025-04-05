@@ -7,6 +7,7 @@ module Signal_Branch_Signal_Branch_sch_tb();
 // Inputs
    reg [1:0] PSW_NZC;
    reg [15:8] InsM;
+   reg Rst;
 
 // Output
    wire Branch;
@@ -32,33 +33,39 @@ module Signal_Branch_Signal_Branch_sch_tb();
 
 // Instantiate the UUT
    Signal_Branch UUT (
+      .Rst(Rst),
 		.PSW_NZC(PSW_NZC), 
 		.InsM(InsM), 
 		.Branch(Branch)
    );
 // Initialize Inputs
    initial begin
+      #150
       Ins = 6'b000000;
       OPM = 8'b00000000;
       OPL = 2'b00;
+      Rst = 1'b1;
+      repeat(2) @(posedge clk) #3;
+      Rst = 1'b0;
+      @(posedge clk) #3;
       PSW_NZC = 2'b00;
       for (i = 6'h01; i < 6'h1A; i = i + 1) begin
          Ins = i;
          @(posedge clk) #3;
-         InsCovet(Ins, OPM, OPL);
+         InsConvert(Ins, OPM, OPL);
          @(posedge clk) #3;
       end
       PSW_NZC = 2'b11;
       for (i = 6'h0C; i < 6'h1A; i = i + 1) begin
          Ins = i;
          @(posedge clk) #3;
-         InsCovet(Ins, OPM, OPL);
+         InsConvert(Ins, OPM, OPL);
          @(posedge clk) #3;
       end
       $finish;
    end
 // task
-   task InsCovet;
+   task InsConvert;
       input [5:0] Ins;
       output [15:8] OpM;
       output [1:0] OpL;
