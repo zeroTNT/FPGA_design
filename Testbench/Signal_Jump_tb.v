@@ -6,7 +6,7 @@ module Signal_Jump_Signal_Jump_sch_tb();
 
 // Inputs
    reg [15:11] InsM;
-
+   reg Rst;
 // Output
    wire [1:0] Jump;
 
@@ -38,23 +38,30 @@ module Signal_Jump_Signal_Jump_sch_tb();
 // Instantiate the UUT
    Signal_Jump UUT (
 		.InsM(InsM), 
+      .Rst(Rst),
 		.Jump(Jump)
    );
 // Initialize Inputs
    initial begin
+      #150
       Ins = 6'b000000;
       OPM = 8'b00000000;
       OPL = 2'b00;
+      Rst = 1'b1;
+      repeat(2) @(posedge clk) #3;
+      InsConvert(Ins, OPM, OPL);
+      repeat(1) @(posedge clk) #3;
+      Rst = 1'b0;
       for (i = 1; i < 6'h1A; i = i + 1) begin
          Ins = i;
          @(posedge clk) #3;
-         InsCovet(Ins, OPM, OPL);
+         InsConvert(Ins, OPM, OPL);
          @(posedge clk) #3;
       end
       $finish;
    end
 // task
-   task InsCovet;
+   task InsConvert;
       input [5:0] Ins;
       output [15:8] OpM;
       output [1:0] OpL;

@@ -56,10 +56,10 @@ module Signal_Buff_PC_Signal_Buff_PC_sch_tb();
 // Initialize Inputs
    initial begin
       #150
-      Rst = 1'b1;
       Ins = 6'h18;
       OPM = 8'b00000000;
       OPL = 2'b00;
+      Rst = 1'b1;
       repeat(2) @(posedge clk) #3;
       InsConvert(Ins, OPM, OPL);
       repeat(1) @(posedge clk) #3;
