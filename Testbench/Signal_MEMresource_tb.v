@@ -8,6 +8,7 @@ module Signal_MEMresource_Signal_MEMresource_sch_tb();
    reg [15:11] InsM;
    reg [1:0] InsL;
    reg [2:0] Cnt;
+   reg Rst;
 
 // Output
    wire MEMresource;
@@ -51,12 +52,14 @@ module Signal_MEMresource_Signal_MEMresource_sch_tb();
 
 // Instantiate the UUT
    Signal_MEMresource UUT (
+      .Rst(Rst),
 		.InsM(InsM), 
 		.Cnt(Cnt), 
 		.InsL(InsL), 
 		.MEMresource(MEMresource)
    );
    Signal_Buff_PC PCSignal (
+      .Rst(Rst), 
 		.Cnt(Cnt), 
 		.InsM(InsM), 
 		.InsL(InsL), 
@@ -64,19 +67,30 @@ module Signal_MEMresource_Signal_MEMresource_sch_tb();
    );
 // Initialize Inputs
    initial begin
+      #150
       Ins = 6'b000000;
       OPM = 8'b00000000;
       OPL = 2'b00;
-      for (i = 1; i < 6'h1A; i = i + 1) begin
+      Rst = 1'b1;
+      repeat(2) @(posedge clk) #3;
+      InsConvert(Ins, OPM, OPL);
+      repeat(1) @(posedge clk) #3;
+      Rst = 1'b0;
+      for (i = 1; i < 6'h1D; i = i + 1) begin
          Ins = i;
+         InsConvert(Ins, OPM, OPL);
+         // Controller recieve Ins when Cnt == 3'b001
          @(posedge clk) #3;
-         InsCovet(Ins, OPM, OPL);
-         repeat(4) @(posedge clk) #3;
+         InsM = OPM[15:11];
+         InsL = OPL[1:0];
+         while (Buff_PC == 1'b0) begin
+            @(posedge clk) #3;
+         end
       end
       $finish;
    end
 // task
-   task InsCovet;
+   task InsConvert;
       input [5:0] Ins;
       output [15:8] OpM;
       output [1:0] OpL;
