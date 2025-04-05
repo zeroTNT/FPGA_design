@@ -5,6 +5,7 @@
 module Signal_LIorMOV_Signal_LIorMOV_sch_tb();
 
 // Inputs
+   reg Rst;
    reg [15:11] InsM;
    reg [2:0] Cnt;
 
@@ -25,46 +26,66 @@ module Signal_LIorMOV_Signal_LIorMOV_sch_tb();
    initial clk = 1'b0;
    always #(CYCLE/2) clk = ~clk;
 // Net, Variable
+   //reg [15:11] InsM;
    reg [1:0] InsL;
-   integer i;
+   //reg [2:0] Cnt;
+   //reg Rst;
    wire Buff_PC;
+
+   integer i;
    reg [5:0] Ins;
    reg [15:8] OPM;
    reg [1:0] OPL;
+   
    initial Cnt = 3'b000;
+   // Synchronous Reset Cnt with Buff_PC
    always @(posedge clk) begin
       #3 
-      if(Buff_PC == 1'b1) Cnt = 3'b000;
+      if((Buff_PC == 1'b1) || (Rst == 1'b1)) Cnt = 3'b000;
       else Cnt = Cnt + 1;
    end
-
+   
 // Instantiate the UUT
    Signal_LIorMOV UUT (
+      .Rst(Rst),
 		.InsM(InsM), 
 		.Cnt(Cnt), 
 		.LIorMOV(LIorMOV)
    );
-   Signal_Buff_PC PCSignal (
+   Signal_Buff_PC PCUT (
 		.Cnt(Cnt), 
+      .Rst(Rst),
 		.InsM(InsM), 
 		.InsL(InsL), 
 		.Buff_PC(Buff_PC)
    );
 // Initialize Inputs
    initial begin
-      Ins = 6'b000000;
+      #150
+      Ins = 6'h0;
       OPM = 8'b00000000;
       OPL = 2'b00;
-      for (i = 1; i < 6'h1A; i = i + 1) begin
+      Rst = 1'b1;
+      repeat(2) @(posedge clk) #3;
+      InsConvert(Ins, OPM, OPL);
+      repeat(1) @(posedge clk) #3;
+      Rst = 1'b0;
+
+      for (i = 1; i < 6'h1D; i = i + 1) begin
          Ins = i;
+         InsConvert(Ins, OPM, OPL);
+         // Controller recieve Ins when Cnt == 3'b001
          @(posedge clk) #3;
-         InsCovet(Ins, OPM, OPL);
-         repeat(4) @(posedge clk) #3;
+         InsM = OPM[15:11];
+         InsL = OPL[1:0];
+         while (Buff_PC == 1'b0) begin
+            @(posedge clk) #3;
+         end
       end
       $finish;
    end
 // task
-   task InsCovet;
+   task InsConvert;
       input [5:0] Ins;
       output [15:8] OpM;
       output [1:0] OpL;
