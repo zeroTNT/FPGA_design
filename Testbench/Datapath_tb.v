@@ -149,7 +149,7 @@ module Datapath_Datapath_sch_tb();
 			Rst = 1'b0;
 			WE_MEM = 1'b0; WE_RF = 1'b0;
 			Buff_PC = 1'b0; Branch = 1'b0; Jump = 2'b0;
-			MEMresource = 1'b0; Buff_MEMIns = 1'b0;
+			MEMresource = 1'b0; Buff_MEMIns = 1'b1;
 			Buff_PSW = 1'b0;
 			repeat (3) @(posedge clk) #3 begin
 				Rst = 1'b1;
