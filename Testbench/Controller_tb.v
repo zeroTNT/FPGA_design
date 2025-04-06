@@ -1,15 +1,34 @@
-// Verilog test fixture created from schematic /home/ise/VMShare/MulticycleRISC/Signal_Done.sch - Sat Apr  5 23:18:52 2025
+// Verilog test fixture created from schematic /home/ise/VMShare/MulticycleRISC/Controller.sch - Sun Apr  6 06:28:38 2025
 
 `timescale 1ns / 1ps
 `define CYCLE_TIME 50.0
-module Signal_Done_Signal_Done_sch_tb();
+module Controller_Controller_sch_tb();
 
 // Inputs
    reg Rst;
-   reg [15:11] InsM;
+   reg [1:0] PSW_NZC;
+   reg [15:8] InsM;
    reg [1:0] InsL;
-   reg [2:0] Cnt;
+   reg clk;
+
 // Output
+   wire Buff_PC;
+   wire Branch;
+   wire [1:0] Jump;
+   wire WE_MEM;
+   wire Buff_MEMIns;
+   wire ALUorNot;
+   wire LIorMOV;
+   wire MEMresource;
+   wire WE_RF;
+   wire WBresource;
+   wire RBresource;
+   wire OprandB;
+   wire LI;
+   wire PCplus1orWB;
+   wire Buff_PSW;
+   wire Flag;
+   wire ALUop;
    wire Done;
 
 // Parameters
@@ -21,7 +40,7 @@ module Signal_Done_Signal_Done_sch_tb();
                      OutR = 6'h18, HLT = 6'h19;
    
 // Clock
-   reg clk;
+   //reg clk;
    real CYCLE = `CYCLE_TIME;
    initial clk = 1'b0;
    always #(CYCLE/2) clk = ~clk;
@@ -30,40 +49,44 @@ module Signal_Done_Signal_Done_sch_tb();
    //reg [1:0] InsL;
    //reg [2:0] Cnt;
    //reg Rst;
-   wire Buff_PC;
+   //wire Buff_PC;
 
    integer i;
    reg [5:0] Ins;
    reg [15:8] OPM;
    reg [1:0] OPL;
-   
-   initial Cnt = 3'b000;
-   // Synchronous Reset Cnt with Buff_PC
-   always @(posedge clk) begin
-      #3 
-      if((Buff_PC == 1'b1) || (Rst == 1'b1)) Cnt = 3'b000;
-      else Cnt = Cnt + 1;
-   end
 
 // Instantiate the UUT
-   Signal_Done UUT (
+   Controller UUT (
 		.Rst(Rst), 
-      .Cnt(Cnt),
+		.PSW_NZC(PSW_NZC), 
 		.InsM(InsM), 
 		.InsL(InsL), 
+		.clk(clk), 
+      .Buff_PC(Buff_PC),
+		.Branch(Branch), 
+		.Jump(Jump), 
+		.WE_MEM(WE_MEM), 
+		.Buff_MEMIns(Buff_MEMIns), 
+		.ALUorNot(ALUorNot), 
+		.LIorMOV(LIorMOV), 
+		.MEMresource(MEMresource), 
+		.WE_RF(WE_RF), 
+		.WBresource(WBresource), 
+		.RBresource(RBresource), 
+		.OprandB(OprandB), 
+		.LI(LI), 
+		.PCplus1orWB(PCplus1orWB), 
+		.Buff_PSW(Buff_PSW), 
+		.Flag(Flag), 
+		.ALUop(ALUop), 
 		.Done(Done)
    );
-   Signal_Buff_PC PCUUT (
-		.Cnt(Cnt), 
-      .Rst(Rst),
-		.InsM(InsM), 
-		.InsL(InsL), 
-		.Buff_PC(Buff_PC)
-   );
 // Initialize Inputs
+   // Initialize Inputs
    initial begin
       #150
-      Ins = 6'h18;
+      Ins = 6'h01;
       OPM = 8'b00000000;
       OPL = 2'b00;
       Rst = 1'b1;
@@ -72,12 +95,13 @@ module Signal_Done_Signal_Done_sch_tb();
       repeat(1) @(posedge clk) #3;
       Rst = 1'b0;
 
+      PSW_NZC = 2'b00;
       for (i = 1; i < 6'h1D; i = i + 1) begin
          Ins = i;
          InsConvert(Ins, OPM, OPL);
          // Controller recieve Ins when Cnt == 3'b001
          @(posedge clk) #3;
-         InsM = OPM[15:11];
+         InsM = OPM[15:8];
          InsL = OPL[1:0];
          while (Buff_PC == 1'b0) begin
             @(posedge clk) #3;
