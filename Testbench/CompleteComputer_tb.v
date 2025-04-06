@@ -13,15 +13,14 @@ module CompleteComputer_CompleteComputer_sch_tb();
    reg TBorNot;
 
 // Output
+   wire Done;
    wire [15:0] OutNextPC;
-   wire [15:0] OutR;
+   wire [15:0] OutReg;
    wire [15:0] OutPC;
-   wire [15:0] OutM;
+   wire [15:0] OutMEM;
    wire [2:0] OutPSW_NZC;
 
 // Net, Variable
-   reg [7:0] MEMaddr;
-   reg [15:0] MEMdata;
 
 // Clock
 	real CYCLE = `CYCLE_TIME;
@@ -30,10 +29,11 @@ module CompleteComputer_CompleteComputer_sch_tb();
 
 // Instantiate the UUT
    CompleteComputer UUT (
+      .Done(Done),
 		.OutNextPC(OutNextPC), 
-		.OutR(OutR), 
+		.OutReg(OutReg), 
 		.OutPC(OutPC), 
-		.OutM(OutM), 
+		.OutMEM(OutMEM), 
 		.clk(clk), 
 		.Rst(Rst), 
 		.Tb_MEMData(Tb_MEMData), 
@@ -58,9 +58,9 @@ module CompleteComputer_CompleteComputer_sch_tb();
       LDRri(8'h02, 3'd3, 3'd1, 5'b00000); // R3 = MEM[R1 + 0] = MEM[h80] = h1
       LDRrr(8'h03, 3'd4, 3'd1, 3'd2); // R4 = MEM[R1 + R2] = MEM[h80 + h01] = MEM[h81] = h21
       SUB(8'h04, 3'd5, 3'd3, 3'd4); // R5 = R4 - R3 = h1 - h21 = hFFE0; N = 1;
-      OutR(8'h05, 3'd3); // OutR R3 = h1
-      OutR(8'h06, 3'd4); // OutR R4 = h21
-      OutR(8'h07, 3'd5); // OutR R5 = hFFE0
+      OutR(8'h05, 3'd3); // OutR = R3 = h1
+      OutR(8'h06, 3'd4); // OutR = R4 = h21
+      OutR(8'h07, 3'd5); // OutR = R5 = hFFE0
       HLT(8'h08); // HLT
       // Wait for computer done
       wait(Done);
@@ -75,8 +75,6 @@ module CompleteComputer_CompleteComputer_sch_tb();
    task ResetProcess;
 		begin
 			Rst = 1'b0;
-         MEMaddr = 0;
-         MEMdata = 0;
          Tb_MEMAddr = 0;
          Tb_MEMData = 0;
          Tb_MEMWE = 1'b0;
