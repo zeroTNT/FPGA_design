@@ -62,12 +62,11 @@ module CompleteComputer_CompleteComputer_sch_tb();
       OutR(8'h06, 3'd4); // OutR = R4 = h21
       OutR(8'h07, 3'd5); // OutR = R5 = hFFE0
       HLT(8'h08); // HLT
+
+      ResetProcess;
       // Wait for computer done
       wait(Done);
       #100;
-      $display("Test Complete");
-      $display("OutR = %h", OutR);
-      #10;
       $finish;
    end
    initial #10000 $finish;
@@ -90,16 +89,16 @@ module CompleteComputer_CompleteComputer_sch_tb();
       begin
          Tb_MEMAddr = Writeaddr;
          Tb_MEMData = Writedata;
-         Tb_MEMWE = 1'b1;
+         Tb_MEMWE = 1'b1; TBorNot = 1'b1;
          @(posedge clk) #3;
-         Tb_MEMWE = 1'b0;
+         Tb_MEMWE = 1'b0; TBorNot = 1'b0;
       end
    endtask
    task ReadMEM; // ReadMEM addr8
       input [7:0] Readaddr;
       begin
          Tb_MEMAddr = Readaddr;
-         Tb_MEMWE = 1'b0;
+         Tb_MEMWE = 1'b0; TBorNot = 1'b0;
          @(posedge clk) #3;
       end
    endtask
@@ -253,4 +252,5 @@ module CompleteComputer_CompleteComputer_sch_tb();
       input [7:0] MEMaddr;
       WriteMEM(MEMaddr, {5'b11100, 9'b0, 2'b01});
    endtask
+
 endmodule
