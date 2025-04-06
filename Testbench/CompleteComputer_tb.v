@@ -21,7 +21,7 @@ module CompleteComputer_CompleteComputer_sch_tb();
    wire [2:0] OutPSW_NZC;
 
 // Net, Variable
-
+   integer i;
 // Clock
 	real CYCLE = `CYCLE_TIME;
 	initial clk = 1'b0;
@@ -52,21 +52,25 @@ module CompleteComputer_CompleteComputer_sch_tb();
       WriteMEM(8'h82, 16'h00A0); // MEM[h82] = hA0 = d160
       WriteMEM(8'h83, 16'h000D); // MEM[h83] = hD  = d13
       WriteMEM(8'h84, 16'h0700); // MEM[h84] = h700= d1792
-      // Assembly code
-      LLI(8'h00, 3'd1, 8'h80); // R1 = h80
-      LLI(8'h01, 3'd2, 8'h01); // R2 = h01
-      LDRri(8'h02, 3'd3, 3'd1, 5'b00000); // R3 = MEM[R1 + 0] = MEM[h80] = h1
-      LDRrr(8'h03, 3'd4, 3'd1, 3'd2); // R4 = MEM[R1 + R2] = MEM[h80 + h01] = MEM[h81] = h21
-      SUB(8'h04, 3'd5, 3'd3, 3'd4); // R5 = R4 - R3 = h1 - h21 = hFFE0; N = 1;
-      OutR(8'h05, 3'd3); // OutR = R3 = h1
-      OutR(8'h06, 3'd4); // OutR = R4 = h21
-      OutR(8'h07, 3'd5); // OutR = R5 = hFFE0
-      HLT(8'h08); // HLT
 
+      // Assembly code conversion and load into memory
+      // First task: Compare two numbers in memory
+      ResetProcess; // Reset the system
+      Q1; 
+      wait(Done); // Start the program
+      repeat (10) @(posedge clk);
+
+      // Second task: Store the "add" result in memory
       ResetProcess;
-      // Wait for computer done
+      Q2; 
       wait(Done);
-      #100;
+      repeat (10) @(posedge clk);
+      ReadMEM(8'h90); // Target memory address
+
+      // Check the memory result
+      for (i = 'h90; i< 'hA0; i=i+1) begin
+         ReadMEM(i);
+      end
       $finish;
    end
    initial #10000 $finish;
@@ -87,9 +91,10 @@ module CompleteComputer_CompleteComputer_sch_tb();
       input [7:0] Writeaddr;
       input [15:0] Writedata;
       begin
+         TBorNot = 1'b1;
          Tb_MEMAddr = Writeaddr;
          Tb_MEMData = Writedata;
-         Tb_MEMWE = 1'b1; TBorNot = 1'b1;
+         Tb_MEMWE = 1'b1;
          @(posedge clk) #3;
          Tb_MEMWE = 1'b0; TBorNot = 1'b0;
       end
@@ -97,9 +102,11 @@ module CompleteComputer_CompleteComputer_sch_tb();
    task ReadMEM; // ReadMEM addr8
       input [7:0] Readaddr;
       begin
+         TBorNot = 1'b1;
          Tb_MEMAddr = Readaddr;
-         Tb_MEMWE = 1'b0; TBorNot = 1'b0;
+         Tb_MEMWE = 1'b0; 
          @(posedge clk) #3;
+         TBorNot = 1'b0;
       end
    endtask
 	task LHI; // LHI Rd, imm8
@@ -253,4 +260,32 @@ module CompleteComputer_CompleteComputer_sch_tb();
       WriteMEM(MEMaddr, {5'b11100, 9'b0, 2'b01});
    endtask
 
+   task Q1;
+      begin
+         LLI(8'h00, 3'd1, 8'h80); // R1 = h80
+         LDRri(8'h01, 3'd2, 3'd1, 5'b00000); // R2 = MEM[h80] = d1
+         LDRri(8'h02, 3'd3, 3'd1, 5'b00001); // R3 = MEM[h81] = d33
+         CMP(8'h03, 3'd3, 3'd2); // CMP R3, R2
+         // IF R3 > R2, then N = 1'b0
+         // IF R3 < R2, then N = 1'b1
+         // IF R3 = R2, then Z = 1'b1
+         HLT(8'h04); // HLT
+      end
+   endtask
+   task Q2;
+      begin
+         LLI(8'h00, 3'd1, 8'h80); // R1 = h80
+         LLI(8'h01, 3'd2, 8'h90); // R2 = h90
+         LDRri(8'h02, 3'd3, 3'd1, 5'b00000); // R3 = MEM[h80] = h1
+         LDRri(8'h03, 3'd4, 3'd1, 5'b00001); // R4 = MEM[h81] = h21
+         ADD(8'h04, 3'd5, 3'd3, 3'd4); // R5 = R3 + R4
+         STRri(8'h05, 3'd5, 3'd2, 5'b00000); // MEM[h90] = R5 = h22
+         HLT(8'h06); // HLT
+      end
+   endtask
+   task Q3;
+      begin
+         
+      end
+   endtask
 endmodule
