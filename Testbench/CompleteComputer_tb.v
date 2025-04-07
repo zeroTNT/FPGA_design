@@ -47,33 +47,91 @@ module CompleteComputer_CompleteComputer_sch_tb();
    initial begin
       ResetProcess;
       // Initialize data in memory
-      WriteMEM(8'h80, 16'h0001); // MEM[h80] = h1  = d1
-      WriteMEM(8'h81, 16'h0021); // MEM[h81] = h21 = d33
-      WriteMEM(8'h82, 16'h00A0); // MEM[h82] = hA0 = d160
-      WriteMEM(8'h83, 16'h000D); // MEM[h83] = hD  = d13
-      WriteMEM(8'h84, 16'h0700); // MEM[h84] = h700= d1792
-
-      // Assembly code conversion and load into memory
-      // First task: Compare two numbers in memory
+      WriteMEM(8'h80, 16'h0064); // MEM[h80] = 'h64
+      WriteMEM(8'h81, 16'h0001); // MEM[h81] = 'h1
+      WriteMEM(8'h82, 16'h0005); // MEM[h82] = 'h5
+      WriteMEM(8'h83, 16'h0008); // MEM[h83] = 'h8
+      WriteMEM(8'h84, 16'h0010); // MEM[h84] = 'h10
+      WriteMEM(8'h85, 16'h0050); // MEM[h85] = 'h50
+      WriteMEM(8'h86, 16'h0080); // MEM[h86] = 'h80
+      WriteMEM(8'h87, 16'h0100); // MEM[h87] = 'h100
+      WriteMEM(8'h88, 16'h0500); // MEM[h88] = 'h500
+      WriteMEM(8'h89, 16'h0800); // MEM[h89] = 'h800
+      WriteMEM(8'h8A, 16'hE000); // MEM[h8A] = 'hE000
+      WriteMEM(8'h8B, 16'hAAAA); // MEM[h8B] = 'hAAAA
+      WriteMEM(8'h8C, 16'hFFFF); // MEM[h8C] = 'hFFFF
+      WriteMEM(8'h8D, 16'h0123); // MEM[h8D] = 'h0123
+      WriteMEM(8'h8E, 16'h7777); // MEM[h8E] = 'h7777
+      
+      // 1st task: Compare two numbers in memory
+      // Expected Results: N = 1
       ResetProcess; // Reset the system
-      Q1; 
-      wait(Done); // Start the program
-      repeat (10) @(posedge clk);
-
-      // Second task: Store the "add" result in memory
+      // Assembly code conversion and load into memory
+      LLI(8'h00, 3'd1, 8'h80); // R1 = h80
+      LDRri(8'h01, 3'd2, 3'd1, 5'b00000); // R2 = MEM[h80] = d64
+      LDRri(8'h02, 3'd3, 3'd1, 5'b00001); // R3 = MEM[h81] = d1
+      CMP(8'h03, 3'd3, 3'd2); // CMP R3, R2
+                              // IF R3 > R2, then N = 1'b0
+                              // IF R3 < R2, then N = 1'b1
+                              // IF R3 = R2, then Z = 1'b1
+      HLT(8'h04); // HLT
       ResetProcess;
-      Q2; 
+      wait(Done); // Start the program
+      repeat (7) @(posedge clk);
+
+      // 2nd task: Store the "add" result in memory
+      // Expected Results: MEM[h90] = h65
+      ResetProcess;
+      LLI(8'h00, 3'd1, 8'h80); // R1 = h80
+      LLI(8'h01, 3'd2, 8'h90); // R2 = h90
+      LDRri(8'h02, 3'd3, 3'd1, 5'b00000); // R3 = MEM[h80] = h64
+      LDRri(8'h03, 3'd4, 3'd1, 5'b00001); // R4 = MEM[h81] = h1
+      ADD(8'h04, 3'd5, 3'd3, 3'd4); // R5 = R3 + R4
+      STRri(8'h05, 3'd5, 3'd2, 5'b00000); // MEM[h90] = R5 = h65
+      HLT(8'h06); // HLT 
+      ResetProcess;
       wait(Done);
-      repeat (10) @(posedge clk);
+      repeat (7) @(posedge clk);
       ReadMEM(8'h90); // Target memory address
 
+      // 3th task: Add ten numbers in consecutive memory locations
+      // Expected Results: R3 = hEEEE
+      ResetProcess;
+      LLI(8'h00, 3'd1, 8'h80); // R1 = h80
+      LLI(8'h01, 3'd2, 8'h09); // R2 = h09
+      LLI(8'h02, 3'd3, 8'h00); // R3 = 0
+      LDRrr(8'h03, 3'd4, 3'd1, 3'd2); // R4 = MEM[h8A]
+      ADD(8'h04, 3'd3, 3'd3, 3'd4); // R3 = R3 + R4
+      OutR(8'h05, 3'd3); // OutR R3
+      SUBI(8'h06, 3'd2, 3'd2, 5'b00001); // R2 = R2 - 1
+      BNE(8'h07, 8'hFC); // BNE -4
+      OutR(8'h08, 3'd3); // OutR R3
+      HLT(8'h09); // HLT 
+      ResetProcess;
+      wait(Done);
+      repeat (7) @(posedge clk);
+      
+      // 4th task: Mov a memory block of N='h7 words from one place to another
+      // Expected Results: MEM[hA0~hAD] = MEM[h80~h8D]
+      ResetProcess;
+      LLI(8'h00, 3'd1, 8'h80); // R1 = h80
+      LLI(8'h01, 3'd2, 8'hA0); // R2 = hA0
+      LLI(8'h02, 3'd3, 8'h07); // R3 = 'h7
+      SUBI(8'h03, 3'd3, 3'd3, 5'b00001); // R3 = R3 - 1
+      LDRrr(8'h04, 3'd4, 3'd1, 3'd3); // R4 = MEM[h8D]
+      STRrr(8'h05, 3'd4, 3'd2, 3'd3); // MEM[hAD] = R4
+      BNE(8'h06, 8'hFD); // BNE -3
+      HLT(8'h07); // HLT 
+      ResetProcess;
+      wait(Done);
+      repeat (7) @(posedge clk);
       // Check the memory result
-      for (i = 'h90; i< 'hA0; i=i+1) begin
+      for (i = 'hA0; i< 'hA7; i=i+1) begin
          ReadMEM(i);
       end
-      $finish;
+      #10 $finish;
    end
-   initial #10000 $finish;
+   initial #30000 $finish;
 // Task
    task ResetProcess;
 		begin
@@ -258,34 +316,5 @@ module CompleteComputer_CompleteComputer_sch_tb();
    task HLT; // HLT
       input [7:0] MEMaddr;
       WriteMEM(MEMaddr, {5'b11100, 9'b0, 2'b01});
-   endtask
-
-   task Q1;
-      begin
-         LLI(8'h00, 3'd1, 8'h80); // R1 = h80
-         LDRri(8'h01, 3'd2, 3'd1, 5'b00000); // R2 = MEM[h80] = d1
-         LDRri(8'h02, 3'd3, 3'd1, 5'b00001); // R3 = MEM[h81] = d33
-         CMP(8'h03, 3'd3, 3'd2); // CMP R3, R2
-         // IF R3 > R2, then N = 1'b0
-         // IF R3 < R2, then N = 1'b1
-         // IF R3 = R2, then Z = 1'b1
-         HLT(8'h04); // HLT
-      end
-   endtask
-   task Q2;
-      begin
-         LLI(8'h00, 3'd1, 8'h80); // R1 = h80
-         LLI(8'h01, 3'd2, 8'h90); // R2 = h90
-         LDRri(8'h02, 3'd3, 3'd1, 5'b00000); // R3 = MEM[h80] = h1
-         LDRri(8'h03, 3'd4, 3'd1, 5'b00001); // R4 = MEM[h81] = h21
-         ADD(8'h04, 3'd5, 3'd3, 3'd4); // R5 = R3 + R4
-         STRri(8'h05, 3'd5, 3'd2, 5'b00000); // MEM[h90] = R5 = h22
-         HLT(8'h06); // HLT
-      end
-   endtask
-   task Q3;
-      begin
-         
-      end
    endtask
 endmodule
