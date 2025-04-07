@@ -32,12 +32,13 @@ module InsDecoder_InsDecoder_sch_tb();
    wire Done;
 
 // Parameters
-   parameter [5:0]   LHI = 6'h01, LLI = 6'h02, LDRri = 6'h03, LDRrr = 6'h04, STRri = 6'h05, STRrr = 6'h06,
-                     ADD = 6'h07, ADC = 6'h08, SUB = 6'h09, SBB = 6'h0A, CMP = 6'h0B,
-                     ADDI = 6'h0C, SUBI = 6'h0D, MOV = 6'h0E,
-                     BCC = 6'h0F, BCS = 6'h10, BEQ = 6'h11, BNE = 6'h12, BAL = 6'h13,
-                     JMP = 6'h14, JALrl = 6'h15, JALrr = 6'h16, JR = 6'h17,
-                     OutR = 6'h18, HLT = 6'h19;
+   parameter [5:0]   LHI = 6'h01, LLI = 6'h02,
+      LDRri = 6'h03, LDRrr = 6'h04, STRri = 6'h05, STRrr = 6'h06,
+      ADD = 6'h07, ADC = 6'h08, SUB = 6'h09, SBB = 6'h0A,
+      CMP = 6'h0B, ADDI = 6'h0C, SUBI = 6'h0D, MOV = 6'h0E,
+      BCC = 6'h0F, BCS = 6'h10, BEQ = 6'h11, BNE = 6'h12, BAL = 6'h13,
+      JMP = 6'h14, JALrl = 6'h15, JALrr = 6'h16, JR = 6'h17,
+      OutR = 6'h18, HLT = 6'h19;
    
 // Clock
    reg clk;
