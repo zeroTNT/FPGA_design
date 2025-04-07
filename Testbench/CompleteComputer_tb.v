@@ -111,7 +111,7 @@ module CompleteComputer_CompleteComputer_sch_tb();
       wait(Done);
       repeat (7) @(posedge clk);
       
-      // 4th task: Mov a memory block of N='h7 words from one place to another
+      // 4th task: Mov a memory block of N='h7 words to another
       // Expected Results: MEM[hA0~hAD] = MEM[h80~h8D]
       ResetProcess;
       LLI(8'h00, 3'd1, 8'h80); // R1 = h80
@@ -132,6 +132,7 @@ module CompleteComputer_CompleteComputer_sch_tb();
       #10 $finish;
    end
    initial #30000 $finish;
+
 // Task
    task ResetProcess;
 		begin
