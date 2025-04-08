@@ -15,6 +15,7 @@ module FA16b2c_FA16b2c_sch_tb();
    wire Cout;
    wire [15:0] Sum;
    wire Z;
+   wire N;
 
 // Bidirs
    integer i;
@@ -30,7 +31,8 @@ module FA16b2c_FA16b2c_sch_tb();
 		.Sum(Sum), 
 		.ALUop(ALUop), 
 		.Flag(Flag),
-      .Z(Z)
+      .Z(Z),
+      .N(N)
    );
 // Initialize Inputs
    initial begin

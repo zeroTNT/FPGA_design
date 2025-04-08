@@ -46,12 +46,6 @@ module InsDecoder_InsDecoder_sch_tb();
    initial clk = 1'b0;
    always #(CYCLE/2) clk = ~clk;
 // Net, Variable
-   //reg [15:11] InsM;
-   //reg [1:0] InsL;
-   //reg [2:0] Cnt;
-   //reg Rst;
-   //wire Buff_PC;
-
    integer i;
    reg [5:0] Ins;
    reg [15:8] OPM;
@@ -93,6 +87,7 @@ module InsDecoder_InsDecoder_sch_tb();
    );
 // Initialize Inputs
    initial begin
+      // initial reset
       #150
       Ins = 6'h01;
       OPM = 8'b00000000;
@@ -104,6 +99,9 @@ module InsDecoder_InsDecoder_sch_tb();
       repeat(1) @(posedge clk) #3;
       Rst = 1'b0;
 
+      // Input every single opcode,
+      // then observe output control signal
+      // Test with PSW_NZC clear
       for (i = 1; i < 6'h19; i = i + 1) begin
          Ins = i;
          InsConvert(Ins, OPM, OPL);
@@ -111,11 +109,12 @@ module InsDecoder_InsDecoder_sch_tb();
          @(posedge clk) #3;
          InsM = OPM[15:8];
          InsL = OPL[1:0];
+         // wait for last stage
          while ((Buff_PC == 1'b0)) begin
             @(posedge clk) #3;
          end
       end
-      // Test with PSW_NZC
+      // Test with PSW_NZC set
       #150
       Ins = 6'h01;
       OPM = 8'b00000000;
