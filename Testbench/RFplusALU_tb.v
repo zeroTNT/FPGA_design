@@ -112,13 +112,4 @@ module RFplusALU_RFplusALU_sch_tb();
       repeat(3) @(posedge clk);
 		#50 $finish;
 	end
-
-	task NOP_IDEXE;
-		begin
-			@(posedge clk) #2;
-			// equivalent to idle operation
-			WBRF = 1'b0;
-			Ins = 16'hxxxx; WBData = 16'hxxxx; MEMData = 16'hxxxx;
-		end
-	endtask
 endmodule
