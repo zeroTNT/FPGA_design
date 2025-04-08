@@ -5,7 +5,7 @@
 module Memory256x16_Memory256x16_sch_tb();
 
 // Inputs
-   reg clk;
+   reg clk_n;
    reg Tbornot;
    reg [7:0] Addr_tb;
    reg [7:0] Addr_pc;
@@ -20,8 +20,8 @@ module Memory256x16_Memory256x16_sch_tb();
 
 // clock
 	real CYCLE = `CYCLE_TIME;
-	initial clk = 1'b0;
-	always #(CYCLE/2) clk = ~clk;
+	initial clk_n = 1'b0;
+	always #(CYCLE/2) clk_n = ~clk_n;
 // variables
 	integer i;
 	reg [24:0] pc;
@@ -32,7 +32,7 @@ module Memory256x16_Memory256x16_sch_tb();
 	end
 // Instantiate the UUT
    Memory256x16 UUT (
-		.clk(clk), 
+		.clk_n(clk_n), 
 		.Tbornot(Tbornot), 
 		.Addr_tb(Addr_tb), 
 		.Addr_pc(Addr_pc),
@@ -47,7 +47,7 @@ module Memory256x16_Memory256x16_sch_tb();
       Tbornot = 1'bx; tb = 25'hxxxxxxx; pc = 25'hxxxxxxx;
 	  #150;
 	  for (i = 0; i <= 20; i = i+1) begin
-		 @(negedge clk) #3 Tbornot = $random(); tb = $random(); pc = $random();
+		 @(posedge clk_n) #3 Tbornot = $random(); tb = $random(); pc = $random();
 	  end
 	  #50 $finish;
    end
