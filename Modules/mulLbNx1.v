@@ -15,12 +15,13 @@
 // Revision: 
 // Revision 1.1 - non-verified
 // Additional Comments: 
-//
+//	This multiplexer is used to select one of the L-bit inputs within M < (2^N) inputs.
+//	
 //////////////////////////////////////////////////////////////////////////////////
 module mulLbNx1
-	#(	parameter L = 1,  		// # of inputs
-		parameter N = 2,  		// # of addr bits (with 2^N inputs)
-		parameter M = 4)( 		// # of output bits
+	#(	parameter L = 1,  		// bit of a word 
+		parameter N = 2,  		// # of addr bits
+		parameter M = 4)( 		// # of inputs word (need to be less equal 2^N)
 		input [N-1:0] addr, 		// address
 		input [M*(L-1):0] D,    // data input with format: {L'bx, L'bx, ..., L'bx}
 		output reg [L-1:0] F);	// data output
