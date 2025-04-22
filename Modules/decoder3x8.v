@@ -21,5 +21,13 @@
 module decoder3x8(
 	input [2:0] addr, 		// address
 	output reg [7:0] F);	// data output
-	
+
+	integer i;
+	// module body
+	always @(*) begin
+		F = 0;
+		for (i = 0; i<8 ; i=i+1) begin
+			if (addr == i) F[i] = 1'b1;
+		end
+	end
 endmodule
