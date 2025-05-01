@@ -15,8 +15,7 @@
 // Revision: 
 // Revision 1.1 - non-verified
 // Additional Comments: 
-// Decoder only used once in the whole project, it's not necessary to use
-// parameterized module.
+// Decoder only used once in the whole project, it's not necessary to use parameterized module.
 //////////////////////////////////////////////////////////////////////////////////
 module decoder3x8(
 	input [2:0] I, 		// address
