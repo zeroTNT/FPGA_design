@@ -15,7 +15,9 @@
 // Revision: 
 // Revision 1.1 - non-verified
 // Additional Comments: 
-// 
+// Reg series naming rule:
+// 		Clkf: falling edge trigger(f)
+//  	En(or not): has Enable control or not.
 //////////////////////////////////////////////////////////////////////////////////
 module Reg16bClkfEn(
 	input clk_n, 		// clock
