@@ -1,0 +1,36 @@
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: National Taiwan University of Science and Technology
+// Engineer: Zong-Yu Wang
+// Create Date:    11:53:10 04/22/2025 
+// Design Name:    Simplified Multicycle 16-bit RISC-V Processor
+// Module Name:    Mul16b8x1
+// Project Name:   MulticycleRISC_verilog
+// Target Devices: Xilix Virtex6 XC6VLX75T-FF484
+// Tool versions:  ISE 14.7 Webpack
+// Description: 
+// This tool is annoying, not such convenience.
+// Dependencies: 
+//
+// Revision: 
+// Revision 1.1 - non-verified
+// Additional Comments: 
+//	This multiplexer is used to select one of the 16-bit inputs within 3 inputs.
+//	
+//////////////////////////////////////////////////////////////////////////////////
+module Mul16b8x1(
+	input [2:0] addr,
+	input [15:0] D0,
+	input [15:0] D1,
+	input [15:0] D2,
+	input [15:0] D3,
+	input [15:0] D4,
+	input [15:0] D5,
+	input [15:0] D6,
+	input [15:0] D7,
+	output reg [15:0] OutData);
+
+	MulLbNx1 Mux0(.addr(addr[2:0]),
+        .D({D7, D6, D5, D4, D3, D2, D1, D0}),
+        .F(OutData));
+endmodule
