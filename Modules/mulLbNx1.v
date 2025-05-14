@@ -4,7 +4,7 @@
 // Engineer: Zong-Yu Wang
 // Create Date:    11:53:10 04/22/2025 
 // Design Name:    Simplified Multicycle 16-bit RISC-V Processor
-// Module Name:    mulLbNx1
+// Module Name:    MulLbNx1
 // Project Name:   MulticycleRISC_verilog
 // Target Devices: Xilix Virtex6 XC6VLX75T-FF484
 // Tool versions:  ISE 14.7 Webpack
@@ -18,7 +18,7 @@
 //	This multiplexer is used to select one of the L-bit inputs within M < (2^N) inputs.
 //	
 //////////////////////////////////////////////////////////////////////////////////
-module mulLbNx1
+module MulLbNx1
 	#(	parameter L = 1,  		// bit of a word 
 		parameter N = 2,  		// # of addr bits
 		parameter M = 4)( 		// # of inputs word (need to be less equal 2^N)
