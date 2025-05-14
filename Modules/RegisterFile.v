@@ -46,33 +46,12 @@ module RegisterFile(
 		end
 	endgenerate
 
-	// read data A
-	always @(*) begin
-		case (Aaddr)
-			3'b000: Adata = regs[0];
-			3'b001: Adata = regs[1];
-			3'b010: Adata = regs[2];
-			3'b011: Adata = regs[3];
-			3'b100: Adata = regs[4];
-			3'b101: Adata = regs[5];
-			3'b110: Adata = regs[6];
-			3'b111: Adata = regs[7];
-			default: Adata = 16'b0;
-		endcase
-	end
-	// read data B
-	always @(*) begin
-		Bdata = 16'b0;
-		case (Baddr)
-			3'b000: Bdata = regs[0];
-			3'b001: Bdata = regs[1];
-			3'b010: Bdata = regs[2];
-			3'b011: Bdata = regs[3];
-			3'b100: Bdata = regs[4];
-			3'b101: Bdata = regs[5];
-			3'b110: Bdata = regs[6];
-			3'b111: Bdata = regs[7];
-			default: Bdata = 16'b0;
-		endcase
-	end
+	MulLbNx1 #(.L(16), .N(3), .M(8)) MuxA(	// multiplexer
+		.addr(Aaddr),			// address
+		.D({regs[7], regs[6], regs[5], regs[4], regs[3], regs[2], regs[1], regs[0]}), // data input
+		.F(Adata));				// data output
+	MulLbNx1 #(.L(16), .N(3), .M(8)) MuxB(	// multiplexer
+		.addr(Baddr),			// address
+		.D({regs[7], regs[6], regs[5], regs[4], regs[3], regs[2], regs[1], regs[0]}), // data input
+		.F(Bdata));				// data output
 endmodule
