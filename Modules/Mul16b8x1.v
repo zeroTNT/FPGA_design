@@ -30,7 +30,17 @@ module Mul16b8x1(
 	input [15:0] D7,
 	output reg [15:0] OutData);
 
-	MulLbNx1 Mux0(.addr(addr[2:0]),
-        .D({D7, D6, D5, D4, D3, D2, D1, D0}),
-        .F(OutData));
+    always @(*) begin
+    	case (addr)
+            3'b000: OutData = D0;
+            3'b001: OutData = D1;
+            3'b010: OutData = D2;
+            3'b011: OutData = D3;
+            3'b100: OutData = D4;
+            3'b101: OutData = D5;
+            3'b110: OutData = D6;
+            3'b111: OutData = D7;
+            default: OutData = 16'bx;
+        endcase
+    end
 endmodule
