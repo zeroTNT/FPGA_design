@@ -4,7 +4,7 @@
 // Engineer: Zong-Yu Wang
 // Create Date:    11:53:10 04/22/2025 
 // Design Name:    Simplified Multicycle 16-bit RISC-V Processor
-// Module Name:    Reg16bClkEn
+// Module Name:    Reg16bClkEnRp
 // Project Name:   MulticycleRISC_verilog
 // Target Devices: Xilix Virtex6 XC6VLX75T-FF484
 // Tool versions:  ISE 14.7 Webpack
@@ -16,20 +16,20 @@
 // Revision 1.1 - non-verified
 // Additional Comments: 
 // Reg series naming rule:
-//		Reg16bClk
-//		En: has Enable control
+// 		Reg16bClkEn
 //  	R(or not): reset (or not)
 //  	p(or not): posedge (or negedge)
 //////////////////////////////////////////////////////////////////////////////////
-module Reg16bClkEn(
-	input clk_n, 		// clock
+module Reg16bClkEnRp(
+	input clk, 		// clock
 	input clk_en,	// clock enable
+	input rst,	// reset
 	input [15:0] D,	// data input
 	output reg [15:0] Q);	// data output
 
 	// module body
-	always @(negedge clk_n) begin
-		if (clk_en) Q <= D;
-		else Q <= Q;
+	always @(posedge clk, posedge rst) begin
+		if(rst) Q <= 16'b0;
+		else if (clk_en) Q <= D;
 	end
 endmodule

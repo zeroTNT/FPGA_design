@@ -16,8 +16,10 @@
 // Revision 1.1 - non-verified
 // Additional Comments: 
 // Reg series naming rule:
-// 		Clkf: falling edge trigger(f)
-//  	En(or not): has Enable control or not.
+//		Reg16bClk
+//		En: has Enable control
+//  	R(or not): reset (or not)
+//  	p(or not): posedge (or negedge)
 //////////////////////////////////////////////////////////////////////////////////
 module Reg16bClkEnp(
 	input clk, 		// clock
@@ -26,7 +28,7 @@ module Reg16bClkEnp(
 	output reg [15:0] Q);	// data output
 
 	// module body
-	always @(negedge clk) begin
+	always @(posedge clk) begin
 		if (clk_en) Q <= D;
 		else Q <= Q;
 	end
