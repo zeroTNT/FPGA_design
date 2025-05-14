@@ -24,34 +24,49 @@ module RegisterFile(
 	input [15:0] Wdata,			// write data
 	input [2:0] Aaddr,			// read address A
 	input [2:0] Baddr,			// read address B
-	output reg [15:0] Adata,	// read data A
-	output reg [15:0] Bdata);	// read data B
+	output [15:0] Adata,	// read data A
+	output [15:0] Bdata);	// read data B
 	
 	wire [7:0] WEtarget;		// write enable target
+	wire [15:0] regs [0:7];	// register array
+
 	Decoder3x8 decoder(		// decoder
 		.I(Waddr),			// address
+		.Enable(WE),		// enable
 		.O(WEtarget));		// data output
 	
-	wire [15:0] regs [0:7];	// register array
 	genvar i;
 	generate
 		for (i = 0; i < 8; i = i + 1) begin: genReg
 			// register
 			Reg16bClkEn reg16b(
-				.clk(clk_n),			// clock
+				.clk_n(clk_n),			// clock
 				.clk_en(WEtarget[i]),	// clock enable
-				.rst(1'b0),				// reset
 				.D(Wdata),				// data input
 				.Q(regs[i]));			// data output
 		end
 	endgenerate
 
-	MulLbNx1 #(.L(16), .N(3), .M(8)) MuxA(	// multiplexer
+	Mul16b8x1 muxA(			// multiplexer A
 		.addr(Aaddr),			// address
-		.D({regs[7], regs[6], regs[5], regs[4], regs[3], regs[2], regs[1], regs[0]}), // data input
-		.F(Adata));				// data output
-	MulLbNx1 #(.L(16), .N(3), .M(8)) MuxB(	// multiplexer
+		.D0(regs[0]),			// data input 0
+		.D1(regs[1]),			// data input 1
+		.D2(regs[2]),			// data input 2
+		.D3(regs[3]),			// data input 3
+		.D4(regs[4]),			// data input 4
+		.D5(regs[5]),			// data input 5
+		.D6(regs[6]),			// data input 6
+		.D7(regs[7]),			// data input 7
+		.OutData(Adata));		// output data
+	Mul16b8x1 muxB(			// multiplexer B
 		.addr(Baddr),			// address
-		.D({regs[7], regs[6], regs[5], regs[4], regs[3], regs[2], regs[1], regs[0]}), // data input
-		.F(Bdata));				// data output
+		.D0(regs[0]),			// data input 0
+		.D1(regs[1]),			// data input 1
+		.D2(regs[2]),			// data input 2
+		.D3(regs[3]),			// data input 3
+		.D4(regs[4]),			// data input 4
+		.D5(regs[5]),			// data input 5
+		.D6(regs[6]),			// data input 6
+		.D7(regs[7]),			// data input 7
+		.OutData(Bdata));		// output data
 endmodule
