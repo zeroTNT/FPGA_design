@@ -16,15 +16,16 @@
 // Revision 1.1 - non-verified
 // Additional Comments: 
 // Reg series naming rule:
-// 		Reg16bClkEn
+// 		Reg16bClk
+//		En: has Enable control
 //  	R(or not): reset (or not)
 //  	p(or not): posedge (or negedge)
 //////////////////////////////////////////////////////////////////////////////////
 module Reg16bClkEnRp(
-	input clk, 		// clock
-	input clk_en,	// clock enable
-	input rst,	// reset
-	input [15:0] D,	// data input
+	input clk, 				// clock
+	input clk_en,			// clock enable
+	input rst,				// reset
+	input [15:0] D,			// data input
 	output reg [15:0] Q);	// data output
 
 	// module body

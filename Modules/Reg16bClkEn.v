@@ -22,14 +22,13 @@
 //  	p(or not): posedge (or negedge)
 //////////////////////////////////////////////////////////////////////////////////
 module Reg16bClkEn(
-	input clk_n, 		// clock
-	input clk_en,	// clock enable
-	input [15:0] D,	// data input
+	input clk_n, 			// clock
+	input clk_en,			// clock enable
+	input [15:0] D,			// data input
 	output reg [15:0] Q);	// data output
 
 	// module body
 	always @(negedge clk_n) begin
 		if (clk_en) Q <= D;
-		else Q <= Q;
 	end
 endmodule

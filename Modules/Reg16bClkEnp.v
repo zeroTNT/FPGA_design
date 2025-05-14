@@ -30,6 +30,5 @@ module Reg16bClkEnp(
 	// module body
 	always @(posedge clk) begin
 		if (clk_en) Q <= D;
-		else Q <= Q;
 	end
 endmodule
