@@ -68,8 +68,8 @@ module RFplusALU(
         .Wdata(Data_Write),
         .Aaddr(Ins[7:5]),
         .Baddr(RB_addr),
-        .AData(AData),
-        .BData(BData)
+        .Adata(AData),
+        .Bdata(BData)
     );
 	assign Rm = AData;
     assign Rd = BData;
@@ -117,11 +117,11 @@ module RFplusALU(
     FA16b2c FA(
         .A(oprandA_EXE),
         .B(oprandB_EXE),
-        .Cin(PSW_C),
-        .ALUop(ALUop),
         .Flag(Flag),
+        .PSW_C(PSW_C),
+        .ALUop(ALUop),
         .Sum(Sum),
-        .C(C),
+        .Cout(C),
         .Z(Z),
         .N(N)
     );
