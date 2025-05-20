@@ -13,7 +13,7 @@
 // Dependencies: 
 // RegisterFile.v, FA16b2c.v, Mul16b2x1.v, Reg16bClkEn.v, Reg16bClkEnR.v
 // Revision: 
-// Revision 1.1 - non-verified
+// Revision 2.0 - verified
 // Additional Comments: 
 // 
 //////////////////////////////////////////////////////////////////////////////////

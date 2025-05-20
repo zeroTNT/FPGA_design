@@ -12,7 +12,8 @@
 // 16-bit ripple carry adder
 // Dependencies: 
 // FA1b.v
-// Revision: 
+// Revision:
+// Revision 2.0 - verified 
 //////////////////////////////////////////////////////////////////////////////////
 module FA16b(
 	input [15:0] A,

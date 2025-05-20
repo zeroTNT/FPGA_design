@@ -13,7 +13,7 @@
 // Dependencies: 
 //
 // Revision: 
-// Revision 1.1 - non-verified
+// Revision 2.0 - verified
 // Additional Comments: 
 //	This multiplexer is used to select one of the 1-bit inputs within 1 input.
 //	
