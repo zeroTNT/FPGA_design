@@ -13,7 +13,7 @@
 // Dependencies: 
 // Mul8b2x1.v, Mul16b2x1.v, Mul2x1.v, Decoder3x8.v, Mul16b8x1.v
 // Revision: 
-// Revision 0.1 - dependencies not finished
+// Revision 2.0 - verified
 // Additional Comments: 
 // The memory modules(RAM32X8S) are introduced from the Xilinx library.
 //////////////////////////////////////////////////////////////////////////////////
