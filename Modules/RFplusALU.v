@@ -92,7 +92,6 @@ module RFplusALU(
 
     //============= ID/EXE Reg ===============//
     wire [15:0] oprandA_EXE;
-    assign OutR = oprandA_EXE;
     Reg16bClkEnR R1(
         .clk_n(clk_n),
         .clk_en(1'b1),
@@ -100,6 +99,7 @@ module RFplusALU(
         .D(AData),
         .Q(oprandA_EXE)
     );
+    assign OutR = oprandA_EXE;
     wire [15:0] oprandB_EXE;
     Reg16bClkEn R2(
         .clk_n(clk_n),
