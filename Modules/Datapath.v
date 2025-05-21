@@ -11,9 +11,11 @@
 // Description: 
 // This tool is annoying, not such convenience.
 // Dependencies: 
+// PCcircuitry.v, Mul16b2x1.v, Mul8b2x1.v, Memory256x16.v, RFplusALU.v
+// Reg16bClkEnp.v, Reg16bClkEnRp.v,
 //
 // Revision: 
-// Revision 1.1 - not verified
+// Revision 2.0 - verified
 // Additional Comments: 
 //////////////////////////////////////////////////////////////////////////////////
 module Datapath(
@@ -58,7 +60,6 @@ module Datapath(
 	);
 
 	//=========== Internal signal ============//
-	wire [15:0] nextPC;
 	wire [15:0] PCplus1_mul;
 	
 	wire [15:0] LIorMOV_Data;
@@ -90,14 +91,14 @@ module Datapath(
 		.Rm(Rm),
 		.Rd(Rd),
 		.PCplus1_mul(PCplus1_mul),
-		.nextPC(nextPC)
+		.nextPC(OutNextPC)
 	);
 
 	Reg16bClkEnRp PCbuffer(
 		.clk(clk),
 		.rst(Rst),
 		.clk_en(Buff_PC),
-		.D(nextPC),
+		.D(OutNextPC),
 		.Q(OutPC)
 	);
 	//========================================//
@@ -121,7 +122,7 @@ module Datapath(
 		.D1(ALU_MEM[7:0]),
 		.F(Addr_pc)
 	);
-	Memory256x16 InsMEM(
+	Memory256x16 MEM(
 		.clk_n(clk),
 		
 		.Tbornot(TBorNot),
@@ -158,7 +159,7 @@ module Datapath(
 	//========================================//
 	//========== RF & ALU circuit ============//
 	Mul16b2x1 Mux_WBData(
-		.addr(ALUorNot),
+		.addr(PCplus1orWB),
 		.D0(PCplus1_mul),
 		.D1(WBData1),
 		.F(WBDataMux)
@@ -173,7 +174,7 @@ module Datapath(
 		.Ins(Ins[10:0]),
 
 		.LI(LI),
-		.oprandB(oprandB),
+		.OprandB(oprandB),
 		.WBresource(WBresource),
 		.RBresource(RBresource),
 		
