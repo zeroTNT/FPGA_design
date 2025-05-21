@@ -13,7 +13,7 @@
 // Dependencies: 
 //
 // Revision:
-// Revision 2.0 - verified
+// Revision 2.1 - verified & add Buff_OutR
 //////////////////////////////////////////////////////////////////////////////////
 module InsDecoder(
     input Rst,
@@ -34,6 +34,7 @@ module InsDecoder(
     output reg RBresource,
     output reg WBresource,
     output reg LI,
+    output reg Buff_OutR,
     output reg PCplus1orWB,
     output reg WE_RF,
     output reg Flag,
@@ -206,6 +207,11 @@ module InsDecoder(
                 default: MEMresource = 1'b0;
             endcase
         end else MEMresource = 1'b0;
+    end
+
+    //Buff_OutR
+    always @(*) begin
+        Buff_OutR = (Rst == 1'b0) && (InsM[15:11] == 5'b11100) && (InsL[1:0] == 2'b00) && (Cnt[2:0] == 3'b001);
     end
 
     //Done

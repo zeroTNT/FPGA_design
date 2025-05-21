@@ -93,6 +93,7 @@ module InsDecoder_InsDecoder_sch_tb();
 		.Done(Done)
    );
 // Initialize Inputs
+   initial #10000 $finish;
    initial begin
       #150
       Ins = 6'h01;
