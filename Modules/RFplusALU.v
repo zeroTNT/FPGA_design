@@ -25,6 +25,7 @@ module RFplusALU(
     input RBresource,
     input OprandB,
     input LI,
+    input Buff_OutR,
     input ALUop,
     input Flag,
     input PSW_C,
@@ -35,6 +36,7 @@ module RFplusALU(
     output [15:0] Rm,
     output [15:0] Rd,
     output [15:0] Sum,
+    output [15:0] OutR_EXE,
     output C,
     output Z,
     output N,
@@ -92,14 +94,21 @@ module RFplusALU(
 
     //============= ID/EXE Reg ===============//
     wire [15:0] oprandA_EXE;
+
     Reg16bClkEnR R1(
         .clk_n(clk_n),
-        .clk_en(1'b1),
+        .clk_en(Buff_OutR),
         .rst(Reset),
+        .D(AData),
+        .Q(OutR)
+    );
+    Reg16bClkEn R1_2(
+        .clk_n(clk_n),
+        .clk_en(1'b1),
         .D(AData),
         .Q(oprandA_EXE)
     );
-    assign OutR = oprandA_EXE;
+    assign OutR_EXE = oprandA_EXE;
     wire [15:0] oprandB_EXE;
     Reg16bClkEn R2(
         .clk_n(clk_n),
