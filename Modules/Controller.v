@@ -4,7 +4,7 @@
 // Engineer: Zong-Yu Wang
 // Create Date:    11:53:10 04/22/2025 
 // Design Name:    Simplified Multicycle 16-bit RISC-V Processor
-// Module Name:    TimingGenerator
+// Module Name:    Controller
 // Project Name:   MulticycleRISC_verilog
 // Target Devices: Xilix Virtex6 XC6VLX75T-FF484
 // Tool versions:  ISE 14.7 Webpack
@@ -15,7 +15,7 @@
 // Revision:
 // Revision 0.1 - not verified
 //////////////////////////////////////////////////////////////////////////////////
-module TimingGenerator(
+module Controller(
     input clk,
     input Rst,
     input [1:0] PSW_NZC,
