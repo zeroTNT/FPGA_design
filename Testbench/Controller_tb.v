@@ -29,6 +29,7 @@ module Controller_Controller_sch_tb();
    wire Buff_PSW;
    wire Flag;
    wire ALUop;
+	wire Buff_OutR;
    wire Done;
 
 // Parameters
@@ -36,11 +37,10 @@ module Controller_Controller_sch_tb();
       LDRri = 6'h03, LDRrr = 6'h04, STRri = 6'h05, STRrr = 6'h06,
       ADD = 6'h07, ADC = 6'h08, SUB = 6'h09, SBB = 6'h0A,
       CMP = 6'h0B, ADDI = 6'h0C, SUBI = 6'h0D, MOV = 6'h0E,
-      BCC = 6'h0F, BCS = 6'h10, BEQ = 6'h11, BNE = 6'h12,
-      BAL = 6'h13,
+      BCC = 6'h0F, BCS = 6'h10, BEQ = 6'h11, BNE = 6'h12, BAL = 6'h13,
       JMP = 6'h14, JALrl = 6'h15, JALrr = 6'h16, JR = 6'h17,
       OutR = 6'h18, HLT = 6'h19;
-
+   
 // Clock
    //reg clk;
    reg laststage;
@@ -52,6 +52,12 @@ module Controller_Controller_sch_tb();
       else laststage = 1'b1;
    end
 // Net, Variable
+   //reg [15:11] InsM;
+   //reg [1:0] InsL;
+   //reg [2:0] Cnt;
+   //reg Rst;
+   //wire Buff_PC;
+
    integer i;
    reg [5:0] Ins;
    reg [15:8] OPM;
@@ -81,9 +87,11 @@ module Controller_Controller_sch_tb();
 		.Buff_PSW(Buff_PSW), 
 		.Flag(Flag), 
 		.ALUop(ALUop), 
+		.Buff_OutR(Buff_OutR),
 		.Done(Done)
    );
 // Initialize Inputs
+   // Initialize Inputs
    initial begin
       #150
       Ins = 6'h01;

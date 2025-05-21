@@ -18,6 +18,7 @@ module Datapath_Datapath_sch_tb();
 	reg WBresource;
 	reg RBresource;
    reg oprandB;
+	reg Buff_OutR;
 	reg LI;
 	reg PCplus1orWB;
 	reg WE_RF;
@@ -57,7 +58,7 @@ module Datapath_Datapath_sch_tb();
 	reg [3:0] PC_control;
 	always @(*) begin
 		{ALUorNot, LIorMOV, MEMresource, WE_MEM, Buff_MEMIns} = MEM_control;
-		{WBresource, RBresource, oprandB, LI, PCplus1orWB, WE_RF} = RF_control;
+		{WBresource, RBresource, oprandB, LI, PCplus1orWB, WE_RF, Buff_OutR} = RF_control;
 		{Flag, ALUop, Buff_PSW} = ALU_control;
 		{Branch, Jump[1:0], Buff_PC} = PC_control;
 	end
@@ -74,6 +75,7 @@ module Datapath_Datapath_sch_tb();
 		.RBresource(RBresource), 
 		.WBresource(WBresource), 
 		.oprandB(oprandB), 
+		.Buff_OutR(Buff_OutR), 
 		.LI(LI), 
 		.Branch(Branch), 
 		.Jump(Jump), 
@@ -160,199 +162,199 @@ module Datapath_Datapath_sch_tb();
 	task Op_LHI;
 		begin
 			@(posedge clk) #3 MEM_control = 5'bxx001; 
-			RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; 
+			RF_control = 7'bxxxxx00;  ALU_control = 3'bxx0; 
 			PC_control = 4'b0000;
 			@(posedge clk) #3 MEM_control = 5'bxxx00; 
-			RF_control = 6'bx1x1x0;  ALU_control = 3'bxx0; 
+			RF_control = 7'bx1x1x00;  ALU_control = 3'bxx0; 
 			PC_control = 4'b0000;
 			@(posedge clk) #3 MEM_control = 5'bxxx00; 
-			RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; 
+			RF_control = 7'bxxxxx00;  ALU_control = 3'bxx0; 
 			PC_control = 4'b0000;
 			@(posedge clk) #3 MEM_control = 5'b10x00; 
-			RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; 
+			RF_control = 7'bxxxxx00;  ALU_control = 3'bxx0; 
 			PC_control = 4'b0000;
 			@(posedge clk) #3 MEM_control = 5'bxxx00; 
-			RF_control = 6'b0xxx11;  ALU_control = 3'bxx0; 
+			RF_control = 7'b0xxx110;  ALU_control = 3'bxx0; 
 			PC_control = 4'b0001;
 		end
 	endtask
 	task Op_LLI;
 		begin
-			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bxxx0x0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'b10x00; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'b0xxx11;  ALU_control = 3'bxx0; PC_control = 4'b0001;
+			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 7'bxxxxx00;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 7'bxxx0x00;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 7'bxxxxx00;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'b10x00; RF_control = 7'bxxxxx00;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 7'b0xxx110;  ALU_control = 3'bxx0; PC_control = 4'b0001;
 		end
 	endtask
 	task Op_LDRri;
 		begin
-			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bxx1xx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bxxxxx0;  ALU_control = 3'b000; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxx100; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'b1xxxx1;  ALU_control = 3'bxx0; PC_control = 4'b0001;
+			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 7'bxxxxx00;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 7'bxx1xx00;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 7'bxxxxx00;  ALU_control = 3'b000; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxx100; RF_control = 7'bxxxxx00;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 7'b1xxxx10;  ALU_control = 3'bxx0; PC_control = 4'b0001;
 		end
 	endtask
 	task Op_LDRrr;
 		begin
-			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bx00xx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bxxxxx0;  ALU_control = 3'b000; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxx100; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'b1xxxx1;  ALU_control = 3'bxx0; PC_control = 4'b0001;
+			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 7'bxxxxx00;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 7'bx00xx00;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 7'bxxxxx00;  ALU_control = 3'b000; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxx100; RF_control = 7'bxxxxx00;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 7'b1xxxx10;  ALU_control = 3'bxx0; PC_control = 4'b0001;
 		end
 	endtask
 	task Op_STRri;
 		begin
-			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bxx1xx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bx1xxx0;  ALU_control = 3'b000; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxx110; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0001;
+			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 7'bxxxxx00;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 7'bxx1xx00;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 7'bx1xxx00;  ALU_control = 3'b000; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxx110; RF_control = 7'bxxxxx00;  ALU_control = 3'bxx0; PC_control = 4'b0001;
 		end
 	endtask
 	task Op_STRrr;
 		begin
-			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bx00xx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bx1xxx0;  ALU_control = 3'b000; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxx110; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0001;
+			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 7'bxxxxx00;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 7'bx00xx00;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 7'bx1xxx00;  ALU_control = 3'b000; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxx110; RF_control = 7'bxxxxx00;  ALU_control = 3'bxx0; PC_control = 4'b0001;
 		end
 	endtask
 	task Op_ADD;
 		begin
-			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bx00xx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bxxxxx0;  ALU_control = 3'b001; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'b0xx00; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'b0xxx11;  ALU_control = 3'bxx0; PC_control = 4'b0001;
+			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 7'bxxxxx00;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 7'bx00xx00;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 7'bxxxxx00;  ALU_control = 3'b001; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'b0xx00; RF_control = 7'bxxxxx00;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 7'b0xxx110;  ALU_control = 3'bxx0; PC_control = 4'b0001;
 		end
 	endtask
 	task Op_ADC;
 		begin
-			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bx00xx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bxxxxx0;  ALU_control = 3'b101; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'b0xx00; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'b0xxx11;  ALU_control = 3'bxx0; PC_control = 4'b0001;
+			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 7'bxxxxx00;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 7'bx00xx00;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 7'bxxxxx00;  ALU_control = 3'b101; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'b0xx00; RF_control = 7'bxxxxx00;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 7'b0xxx110;  ALU_control = 3'bxx0; PC_control = 4'b0001;
 		end
 	endtask
 	task Op_SUB;
 		begin
-			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bx00xx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bxxxxx0;  ALU_control = 3'b011; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'b0xx00; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'b0xxx11;  ALU_control = 3'bxx0; PC_control = 4'b0001;
+			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 7'bxxxxx00;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 7'bx00xx00;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 7'bxxxxx00;  ALU_control = 3'b011; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'b0xx00; RF_control = 7'bxxxxx00;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 7'b0xxx110;  ALU_control = 3'bxx0; PC_control = 4'b0001;
 		end
 	endtask
 	task Op_SBB;
 		begin
-			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bx00xx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bxxxxx0;  ALU_control = 3'b111; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'b0xx00; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'b0xxx11;  ALU_control = 3'bxx0; PC_control = 4'b0001;
+			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 7'bxxxxx00;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 7'bx00xx00;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 7'bxxxxx00;  ALU_control = 3'b111; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'b0xx00; RF_control = 7'bxxxxx00;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 7'b0xxx110;  ALU_control = 3'bxx0; PC_control = 4'b0001;
 		end
 	endtask
 	task Op_CMP;
 		begin
-			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bx00xx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bxxxxx0;  ALU_control = 3'b011; PC_control = 4'b0001;
+			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 7'bxxxxx00;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 7'bx00xx00;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 7'bxxxxx00;  ALU_control = 3'b011; PC_control = 4'b0001;
 		end
 	endtask
 	task Op_ADDI;
 		begin
-			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bxx1xx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bxxxxx0;  ALU_control = 3'b001; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'b0xx00; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'b0xxx11;  ALU_control = 3'bxx0; PC_control = 4'b0001;
+			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 7'bxxxxx00;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 7'bxx1xx00;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 7'bxxxxx00;  ALU_control = 3'b001; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'b0xx00; RF_control = 7'bxxxxx00;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 7'b0xxx110;  ALU_control = 3'bxx0; PC_control = 4'b0001;
 		end
 	endtask
 	task Op_SUBI;
 		begin
-			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bxx1xx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bxxxxx0;  ALU_control = 3'b011; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'b0xx00; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'b0xxx11;  ALU_control = 3'bxx0; PC_control = 4'b0001;
+			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 7'bxxxxx00;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 7'bxx1xx00;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 7'bxxxxx00;  ALU_control = 3'b011; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'b0xx00; RF_control = 7'bxxxxx00;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 7'b0xxx110;  ALU_control = 3'bxx0; PC_control = 4'b0001;
 		end
 	endtask
 	task Op_MOV;
 		begin
-			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'b11x00; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'b0xxx11;  ALU_control = 3'bxx0; PC_control = 4'b0001;
+			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 7'bxxxxx00;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 7'bxxxxx00;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 7'bxxxxx00;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'b11x00; RF_control = 7'bxxxxx00;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 7'b0xxx110;  ALU_control = 3'bxx0; PC_control = 4'b0001;
 		end
 	endtask
 	task Op_BCC;
 		begin
-			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = {(~PSW_NZC[0]), 2'b0, 1'b1};
+			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 7'bxxxxx00;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 7'bxxxxx00;  ALU_control = 3'bxx0; PC_control = {(~PSW_NZC[0]), 2'b0, 1'b1};
 		end
 	endtask
 	task Op_BCS;
 		begin
-			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = {(PSW_NZC[0]), 2'b0, 1'b1};
+			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 7'bxxxxx00;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 7'bxxxxx00;  ALU_control = 3'bxx0; PC_control = {(PSW_NZC[0]), 2'b0, 1'b1};
 		end
 	endtask
 	task Op_BNE;
 		begin
-			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = {(~PSW_NZC[1]), 2'b0, 1'b1};
+			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 7'bxxxxx00;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 7'bxxxxx00;  ALU_control = 3'bxx0; PC_control = {(~PSW_NZC[1]), 2'b0, 1'b1};
 		end
 	endtask
 	task Op_BEQ;
 		begin
-			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = {(PSW_NZC[1]), 2'b0, 1'b1};
+			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 7'bxxxxx00;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 7'bxxxxx00;  ALU_control = 3'bxx0; PC_control = {(PSW_NZC[1]), 2'b0, 1'b1};
 		end
 	endtask
 	task Op_BAL;
 		begin
-			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = {1'b1, 2'b0, 1'b1};
+			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 7'bxxxxx00;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 7'bxxxxx00;  ALU_control = 3'bxx0; PC_control = {1'b1, 2'b0, 1'b1};
 		end
 	endtask
 	task Op_JMP;
 		begin
-			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = {1'bx, 2'b01, 1'b1};
+			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 7'bxxxxx00;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 7'bxxxxx00;  ALU_control = 3'bxx0; PC_control = {1'bx, 2'b01, 1'b1};
 		end
 	endtask
 	task Op_JALrl;
 		begin
-			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'b0xxx01;  ALU_control = 3'bxx0; PC_control = {1'b1, 2'b0, 1'b1};
+			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 7'bxxxxx00;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 7'b0xxx010;  ALU_control = 3'bxx0; PC_control = {1'b1, 2'b0, 1'b1};
 		end
 	endtask
 	task Op_JALrr;
 		begin
-			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'b0xxx01;  ALU_control = 3'bxx0; PC_control = {1'bx, 2'b10, 1'b1};
+			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 7'bxxxxx00;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 7'b0xxx010;  ALU_control = 3'bxx0; PC_control = {1'bx, 2'b10, 1'b1};
 		end
 	endtask
 	task Op_JR;
 		begin
-			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bx1xxx0;  ALU_control = 3'bxx0; PC_control = {1'bx, 2'b11, 1'b1};
+			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 7'bxxxxx00;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 7'bx1xxx00;  ALU_control = 3'bxx0; PC_control = {1'bx, 2'b11, 1'b1};
 		end
 	endtask
 	task Op_OutR;
 		begin
-			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0001;
+			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 7'bxxxxx00;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 7'bxxxxx01;  ALU_control = 3'bxx0; PC_control = 4'b0001;
 		end
 	endtask
 	task Op_HLT;
 		begin
-			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0000;
-			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 6'bxxxxx0;  ALU_control = 3'bxx0; PC_control = 4'b0001;
+			@(posedge clk) #3 MEM_control = 5'bxx001; RF_control = 7'bxxxxx00;  ALU_control = 3'bxx0; PC_control = 4'b0000;
+			@(posedge clk) #3 MEM_control = 5'bxxx00; RF_control = 7'bxxxxx00;  ALU_control = 3'bxx0; PC_control = 4'b0001;
 			// simulate controller signal "done"
 			@(posedge clk) #3 $display("######  Operation HLT accepted, PC stop counting.  ######");
 			done = 1'b1;

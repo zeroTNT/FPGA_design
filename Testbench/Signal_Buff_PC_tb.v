@@ -27,8 +27,8 @@ module Signal_Buff_PC_Signal_Buff_PC_sch_tb();
    initial clk = 1'b0;
    always #(CYCLE/2) clk = ~clk;
 // Net, Variable
-   //reg [15:11] InsM;
    //reg [1:0] InsL;
+   //reg [15:11] InsM;
    //reg [2:0] Cnt;
    //reg Rst;
    //wire Buff_PC;
@@ -56,10 +56,10 @@ module Signal_Buff_PC_Signal_Buff_PC_sch_tb();
 // Initialize Inputs
    initial begin
       #150
+      Rst = 1'b1;
       Ins = 6'h18;
       OPM = 8'b00000000;
       OPL = 2'b00;
-      Rst = 1'b1;
       repeat(2) @(posedge clk) #3;
       InsConvert(Ins, OPM, OPL);
       repeat(1) @(posedge clk) #3;

@@ -13,7 +13,7 @@ module Reg16bClkEnRp_Reg16bClkEnRp_sch_tb();
 // Output
    wire [15:0] Q;
 
-// Clock
+// Bidirs
    real CYCLE = `CYCLE_TIME;
    initial clk = 1'b0;
    always #(CYCLE/2) clk = ~clk;

@@ -58,7 +58,6 @@ module Signal_Buff_MEMIns_Signal_Buff_MEMIns_sch_tb();
    );
 // Initialize Inputs
    initial begin
-      #150
       Ins = 6'b000000;
       OPM = 8'b00000000;
       OPL = 2'b00;

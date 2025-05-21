@@ -18,11 +18,13 @@ module RFplusALU_RFplusALU_sch_tb();
 	reg Flag;
    reg ALUop;
    reg PSW_C;
+	reg Buff_OutR;
 
 // Output
    wire [15:0] Rm;
    wire [15:0] Rd;
 	wire [15:0] OutR;
+	wire [15:0] OutR_EXE;
 	wire [15:0] LI_EXE;
 	wire [15:0] Sum;
    wire N;
@@ -47,6 +49,7 @@ module RFplusALU_RFplusALU_sch_tb();
 		.Rd(Rd),
 		// RFplusALU EXE stage output data
 		.OutR(OutR), 
+		.OutR_EXE(OutR_EXE),
 		.LI_EXE(LI_EXE), 
 		.Sum(Sum), 
 		.C(C), 
@@ -58,6 +61,7 @@ module RFplusALU_RFplusALU_sch_tb();
 		.WBresource(WBresource), 
 		.OprandB(OprandB), 
 		.LI(LI), 
+		.Buff_OutR(Buff_OutR),
 		.PSW_C(PSW_C),
 		.ALUop(ALUop), 
 		.Flag(Flag)
@@ -68,21 +72,22 @@ module RFplusALU_RFplusALU_sch_tb();
 		// reset control signals
 		#150;
 		@(negedge clk) Reset = 1'b1;
-		repeat(3) @(negedge clk) NOP_IDEXE;
+		repeat(3) @(negedge clk); //NOP_IDEXE;
 		Reset = 1'b0;
 
 		// initial Register file data
 		Ins = 11'h0000; WBData = 16'h0000; MEMData = 16'h0000;
-		{WBRF, WBresource, RBresource, OprandB, LI} = 5'b0;
+		{WBRF, WBresource, RBresource, OprandB, LI, Buff_OutR} = 6'b0;
 		{PSW_C, ALUop, Flag} = 3'b0;
 		for (i = 0; i < 8; i = i+1) begin
 			@(posedge clk) #3
+			Buff_OutR = 1'b0;
 			WBRF = 1'b1; WBresource = 1'b0; 						// Enable WB from WBdata
 			RBresource = 1'b0; OprandB = 1'b0;	// Rn=Ins[4:2] is assigned to Oprand B
 			{PSW_C, ALUop, Flag} = i[2:0];
 			WBData = i+1; Ins[10:8] = i; Ins[7:5] = i; Ins[4:2] = i;
 			@(posedge clk) #3
-			{WBRF, WBresource, RBresource, OprandB, LI} = 5'b0;
+			{WBRF, WBresource, RBresource, OprandB, LI, Buff_OutR} = 6'b000001;
 			//i=000:	Rdaddr = 0, Rddata = 1, Rmaddr = 0, Rnaddr = 0, Sum = Rm + Rn			, PSW_C=0
 			//i=001:	Rdaddr = 1, Rddata = 2, Rmaddr = 1, Rnaddr = 1, Sum = Rm + Rn + PSW_C,	, PSW_C=0
 			//i=010:	Rdaddr = 2, Rddata = 3, Rmaddr = 2, Rnaddr = 2, Sum = Rm - Rn			, PSW_C=0
@@ -96,18 +101,18 @@ module RFplusALU_RFplusALU_sch_tb();
 		//1 LHI: DataB = RF[ins[10:8]], LI_EXE = {ins[7:0], DataB}
 		@(posedge clk) #3;
 		Ins = {3'd1, 8'h55};	WBData = {16'h0404};
-		{WBRF, WBresource, RBresource, OprandB, LI} = 5'b0x1x1;
+		{WBRF, WBresource, RBresource, OprandB, LI, Buff_OutR} = 6'b0x1x10;
 		{PSW_C, ALUop, Flag} = 3'bxxx;
 		@(posedge clk) #3;
 		//2 LLI: LI_EXE = {8'b0, ins[7:0]}
 		@(posedge clk) #3;
 		Ins = {3'd1, 8'h44};	WBData = {16'h0404};
-		{WBRF, WBresource, RBresource, OprandB, LI} = 5'b0xxx0;
+		{WBRF, WBresource, RBresource, OprandB, LI, Buff_OutR} = 6'b0xxx00;
 		{PSW_C, ALUop, Flag} = 3'bxxx;
 		@(posedge clk) #3;
 		//3 LDR: RF[Ins[10:8]] = MEMData, then read out RF[Ins[10:8]]
 		Ins = {3'd1, 8'h44};	WBData = {16'h0404};	MEMData = {16'h1100};
-		{WBRF, WBresource, RBresource, OprandB, LI} = 5'b111xx;
+		{WBRF, WBresource, RBresource, OprandB, LI, Buff_OutR} = 6'b111xx0;
 		{PSW_C, ALUop, Flag} = 3'bxxx;
       repeat(3) @(posedge clk);
 		#50 $finish;

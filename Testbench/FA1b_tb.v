@@ -44,6 +44,6 @@ module FA1b_FA1b_sch_tb();
 	 #10 I = 3'b011;
 	 #10 I = 3'b001;
 	 #10 I = 3'b000;
-    #50 $finish;
+	 #50 $finish;
 	end
 endmodule
