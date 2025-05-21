@@ -12,7 +12,7 @@
 // This tool is annoying, not such convenience.
 // Dependencies: 
 // PCcircuitry.v, Mul16b2x1.v, Mul8b2x1.v, Memory256x16.v, RFplusALU.v
-// Reg16bClkEnp.v, Reg16bClkEnRp.v,
+// Reg16bClkEnp.v, Reg16bClkEnRp.v
 //
 // Revision: 
 // Revision 2.0 - verified
