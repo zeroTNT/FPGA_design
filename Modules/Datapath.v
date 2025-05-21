@@ -15,7 +15,7 @@
 // Reg16bClkEnp.v, Reg16bClkEnRp.v
 //
 // Revision: 
-// Revision 2.0 - verified
+// Revision 2.1 - verified & add Buff_OutR
 // Additional Comments: 
 //////////////////////////////////////////////////////////////////////////////////
 module Datapath(
@@ -42,6 +42,7 @@ module Datapath(
     input Flag,
 	input ALUop,
     input Buff_PSW,
+	input Buff_OutR,
 
 	// Memory control
 	input MEMresource,
@@ -74,6 +75,7 @@ module Datapath(
 	wire N, Z, C;
 	wire [15:0] Sum;
 	wire [15:0] LI_EXE;
+	wire [15:0] OutR_EXE;
 	reg [2:0] PSW_NZC;
 	wire [15:0] LI_MEM;
 	wire [15:0] OutR_MEM;
@@ -174,6 +176,7 @@ module Datapath(
 		.Ins(Ins[10:0]),
 
 		.LI(LI),
+		.Buff_OutR(Buff_OutR),
 		.OprandB(oprandB),
 		.WBresource(WBresource),
 		.RBresource(RBresource),
@@ -189,6 +192,7 @@ module Datapath(
 		.N(N),
 		.Z(Z),
 		.C(C),
+		.OutR_EXE(OutR_EXE),
 		.OutR(OutR)
 	);
 	always @(posedge clk, posedge Rst) begin
@@ -214,7 +218,7 @@ module Datapath(
 	Reg16bClkEnp OutRBuffer(
 		.clk(clk),
 		.clk_en(1'b1),
-		.D(OutR),
+		.D(OutR_EXE),
 		.Q(OutR_MEM)
 	);
 	Reg16bClkEnp WDRBuffer(
