@@ -13,7 +13,7 @@
 // Dependencies: 
 //
 // Revision:
-// Revision 1.1 - not verified
+// Revision 2.0 - verified
 //////////////////////////////////////////////////////////////////////////////////
 module InsDecoder(
     input Rst,
@@ -63,11 +63,10 @@ module InsDecoder(
 
     //Branch
     always @(*) begin
-        branch_condition = InsM[11] | (InsM[8] ^ ( (PSW_NZC[1] & (~InsM[9])) | (PSW_NZC[0] & InsM[9]) ));
-        if(Rst == 0) Branch = 1'b0;
-        else begin
-            Branch = ( {InsM[15:12], branch_condition} == 5'b11001 ) || (InsM[15:11] == 5'b10001);
-        end
+        branch_condition = (InsM[11:8] == 4'b1110) || (InsM[8] ^ ( (PSW_NZC[1] && (~InsM[9])) || (PSW_NZC[0] && InsM[9]) ));
+        if(Rst) Branch = 1'b0;
+        else if ( ( {InsM[15:12], branch_condition} == 5'b11001 ) || (InsM[15:11] == 5'b10001) ) Branch = 1'b1;
+        else Branch = 1'b0;
     end
 
     //ALUop
@@ -131,10 +130,10 @@ module InsDecoder(
 
     //Buff_PC
     always @(*) begin
-        Buff_PC_condition1 = ({InsM[15:11], InsL[0]} == 6'b111000) || ({InsM[15], InsM[13]} == 2'b 10);
+        Buff_PC_condition1 = ({InsM[15:11], InsL[0]} == 6'b111000) || ({InsM[15], InsM[13]} == 2'b10);
         Buff_PC_condition2 = ({InsM[15:11], InsL[1:0]} == 7'b00110_01);
         Buff_PC_condition3 = ({InsM[15:11], InsL[1:0]} == 7'b00110_00) || (InsM[15:11] == 5'b00101);
-        Buff_PC_condition4 = (InsM[15:13] == 3'b000) || (InsM[15:11] == 5'b00100) || (InsM[15:13] == 3'b010) || (InsM[15:13] == 3'b111);
+        Buff_PC_condition4 = (InsM[15:13] == 3'b000) || (InsM[15:11] == 5'b00100) || (InsM[15:13] == 3'b010) || (InsM[13:11] == 3'b111);
         if(Rst) Buff_PC = 1'b0;
         else begin
             case (Cnt)
@@ -181,7 +180,7 @@ module InsDecoder(
 
     //LIorMOV
     always @(*) begin
-        LIorMOV = (InsM[15:11] == 5'b01011) && (Cnt[2:0] == 3'b100) && (Rst == 1'b0);
+        LIorMOV = (InsM[15:11] == 5'b01011) && (Cnt[2:0] == 3'b011) && (Rst == 1'b0);
     end
 
     //ALUorNot
@@ -203,7 +202,7 @@ module InsDecoder(
                 5'b00011: MEMresource = 1'b1;
                 5'b00100: MEMresource = 1'b1;
                 5'b00101: MEMresource = 1'b1;
-                5'b00110: MEMresource = &(InsL);
+                5'b00110: MEMresource = ~|(InsL);
                 default: MEMresource = 1'b0;
             endcase
         end else MEMresource = 1'b0;
