@@ -12,8 +12,7 @@
 // 16-bit ripple carry adder
 // Dependencies: 
 //
-// Revision:
-// Revision 0.1 - not verified
+// Revision: 2.0 - verified
 //////////////////////////////////////////////////////////////////////////////////
 module Controller(
     input clk,
