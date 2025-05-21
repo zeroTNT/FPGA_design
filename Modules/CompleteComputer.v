@@ -12,7 +12,7 @@
 // 16-bit ripple carry adder
 // Dependencies: 
 //
-// Revision: 1.1 - not verified
+// Revision: 2.1 - verified & add Buff_OutR
 //////////////////////////////////////////////////////////////////////////////////
 module CompleteComputer(
     input clk,
@@ -38,6 +38,7 @@ module CompleteComputer(
     wire Flag;
     wire [1:0] Jump;
     wire LI;
+    wire Buff_OutR;
     wire LIorMOV;
     wire MEMresource;
     wire OprandB;
@@ -63,14 +64,13 @@ module CompleteComputer(
         .WE_MEM(WE_MEM),
         .Buff_MEMIns(Buff_MEMIns),
 
-
         .WBresource(WBresource),
         .RBresource(RBresource),
         .OprandB(OprandB),
         .LI(LI),
+        .Buff_OutR(Buff_OutR),
         .PCplus1orWB(PCplus1orWB),
         .WE_RF(WE_RF),
-
 
         .Flag(Flag),
         .ALUop(ALUop),
@@ -100,17 +100,15 @@ module CompleteComputer(
 
         .WBresource(WBresource),
         .RBresource(RBresource),
-        .OprandB(OprandB),
+        .oprandB(OprandB),
         .LI(LI),
+        .Buff_OutR(Buff_OutR),
         .PCplus1orWB(PCplus1orWB),
         .WE_RF(WE_RF),
 
-        
         .Flag(Flag),
         .ALUop(ALUop),
         .Buff_PSW(Buff_PSW),
-
-        
         
         .Buff_PC(Buff_PC),
         .Branch(Branch),

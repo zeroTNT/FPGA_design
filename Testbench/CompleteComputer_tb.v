@@ -95,12 +95,12 @@ module CompleteComputer_CompleteComputer_sch_tb();
       ReadMEM(8'h90); // Target memory address
 
       // 3th task: Add ten numbers in consecutive memory locations
-      // Expected Results: R3 = hEEEE
+      // Expected Results: R3 = h0EEE
       ResetProcess;
       LLI(8'h00, 3'd1, 8'h80); // R1 = h80
-      LLI(8'h01, 3'd2, 8'h09); // R2 = h09
+      LLI(8'h01, 3'd2, 8'h0A); // R2 = h0A
       LLI(8'h02, 3'd3, 8'h00); // R3 = 0
-      LDRrr(8'h03, 3'd4, 3'd1, 3'd2); // R4 = MEM[h8A]
+      LDRrr(8'h03, 3'd4, 3'd1, 3'd2);
       ADD(8'h04, 3'd3, 3'd3, 3'd4); // R3 = R3 + R4
       OutR(8'h05, 3'd3); // OutR R3
       SUBI(8'h06, 3'd2, 3'd2, 5'b00001); // R2 = R2 - 1
