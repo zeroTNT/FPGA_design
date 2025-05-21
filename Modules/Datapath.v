@@ -13,7 +13,7 @@
 // Dependencies: 
 //
 // Revision: 
-// Revision 0.2 - not finished, some signals in MEM circuit are not connected
+// Revision 1.1 - not verified
 // Additional Comments: 
 //////////////////////////////////////////////////////////////////////////////////
 module Datapath(
@@ -59,12 +59,26 @@ module Datapath(
 
 	//=========== Internal signal ============//
 	wire [15:0] nextPC;
-	wire [15:0] Ins;
-	wire [15:0] Rm, Rd;
 	wire [15:0] PCplus1_mul;
-
-	wire [15:0] DatafromMEM;
 	
+	wire [15:0] LIorMOV_Data;
+	wire [15:0] ALUorNot_Out;
+	wire [7:0] Addr_pc;
+	wire [15:0] Ins;
+	wire [15:0] MEMData;
+	wire [15:0] WBData1;
+
+	wire [15:0] WBDataMux;
+	wire [15:0] Rm, Rd;
+	wire N, Z, C;
+	wire [15:0] Sum;
+	wire [15:0] LI_EXE;
+	reg [2:0] PSW_NZC;
+	wire [15:0] LI_MEM;
+	wire [15:0] OutR_MEM;
+	wire [15:0] WDR;
+
+	wire [15:0] ALU_MEM;
 	//========================================//
 
 	//============= PC circuit ===============//
@@ -89,11 +103,23 @@ module Datapath(
 	//========================================//
 
 	//============= MEM circuit ==============//
+	Mul16b2x1 Mux_LIorMOV(
+		.addr(LIorMOV),
+		.D0(LI_MEM),
+		.D1(OutR_MEM),
+		.F(LIorMOV_Data)
+	);
+	Mul16b2x1 Mux_ALUorNot(
+		.addr(ALUorNot),
+		.D0(ALU_MEM),
+		.D1(LIorMOV_Data),
+		.F(ALUorNot_Out)
+	);
 	Mul8b2x1 PCorWB(
 		.addr(MEMresource),
-		.D0(PC[7:0]),
+		.D0(OutPC[7:0]),
 		.D1(ALU_MEM[7:0]),
-		.Out(MEMaddr)
+		.F(Addr_pc)
 	);
 	Memory256x16 InsMEM(
 		.clk_n(clk),
@@ -103,22 +129,24 @@ module Datapath(
 		.Data_tb(Tb_MEMData),
 		.WE_tb(Tb_MEMWE),
 
-		.Addr_pc(MEMaddr),
+		.Addr_pc(Addr_pc),
 		.Data_pc(WDR),
 		.WE_pc(WE_MEM),
 
-		.MemOut(DatafromMEM)
+		.MemOut(OutM)
 	);
 	Reg16bClkEnp Insbuffer(
 		.clk(clk),
 		.clk_en(Buff_MEMIns),
-		.D(DatafromMEM),
+		.D(OutM),
 		.Q(Ins)
 	);
+	assign InsL = Ins[1:0];
+	assign InsM = Ins[15:8];
 	Reg16bClkEnp MEMDatabuffer(
 		.clk(clk),
 		.clk_en(1'b1),
-		.D(DatafromMEM),
+		.D(OutM),
 		.Q(MEMData)
 	);
 	Reg16bClkEnp MEMWBbuffer(
@@ -126,6 +154,73 @@ module Datapath(
 		.clk_en(1'b1),
 		.D(ALUorNot_Out),
 		.Q(WBData1)
+	);
+	//========================================//
+	//========== RF & ALU circuit ============//
+	Mul16b2x1 Mux_WBData(
+		.addr(ALUorNot),
+		.D0(PCplus1_mul),
+		.D1(WBData1),
+		.F(WBDataMux)
+	);
+	RFplusALU RFplusALU_module(
+		.clk(clk),
+		.Reset(Rst),
+
+		.WBRF(WE_RF),
+		.WBData(WBDataMux),
+		.MEMData(MEMData),
+		.Ins(Ins[10:0]),
+
+		.LI(LI),
+		.oprandB(oprandB),
+		.WBresource(WBresource),
+		.RBresource(RBresource),
+		
+		.PSW_C(PSW_NZC[0]),
+		.Flag(Flag),
+		.ALUop(ALUop),
+		
+		.Rm(Rm),
+		.Rd(Rd),
+		.Sum(Sum),
+		.LI_EXE(LI_EXE),
+		.N(N),
+		.Z(Z),
+		.C(C),
+		.OutR(OutR)
+	);
+	always @(posedge clk, posedge Rst) begin
+		if(Rst) PSW_NZC <= 3'b000;
+		else if(Buff_PSW) begin
+			PSW_NZC[0] <= C;
+			PSW_NZC[1] <= Z;
+			PSW_NZC[2] <= N;
+		end
+	end
+	Reg16bClkEnp ALUbuffer(
+		.clk(clk),
+		.clk_en(1'b1),
+		.D(Sum),
+		.Q(ALU_MEM)
+	);
+	Reg16bClkEnp LIbuffer(
+		.clk(clk),
+		.clk_en(1'b1),
+		.D(LI_EXE),
+		.Q(LI_MEM)
+	);
+	Reg16bClkEnp OutRBuffer(
+		.clk(clk),
+		.clk_en(1'b1),
+		.D(OutR),
+		.Q(OutR_MEM)
+	);
+	Reg16bClkEnp WDRBuffer(
+		.clk(clk),
+		.clk_en(1'b1),
+		.D(Rd),
+		.Q(WDR)
 	);
 	//========================================//
 endmodule
