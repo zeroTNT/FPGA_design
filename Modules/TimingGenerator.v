@@ -11,39 +11,23 @@
 // Description: 
 // 16-bit ripple carry adder
 // Dependencies: 
-// FA1b.v
+//
 // Revision:
-// Revision 0.1 - not finished
+// Revision 2.0 - verified
 //////////////////////////////////////////////////////////////////////////////////
 module TimingGenerator(
-	input [15:0] A,
-    input [15:0] B,
-    input Cin,
-    output [15:0] Sum,
-    output Cout);
-    wire [15:0] C;
-
-    genvar i;
-    generate
-        for (i=0; i<16; i=i+1) begin: FA
-            if (i==0) begin
-                FA1b FA1b_inst(
-                    .A(A[i]),
-                    .B(B[i]),
-                    .Cin(Cin),
-                    .Sum(Sum[i]),
-                    .Cout(C[i])
-                );
-            end else begin
-                FA1b FA1b_inst(
-                    .A(A[i]),
-                    .B(B[i]),
-                    .Cin(C[i-1]),
-                    .Sum(Sum[i]),
-                    .Cout(C[i])
-                );
-            end
+    input clk,
+    input Rst,
+    input LastStage,
+    output [2:0] Cnt
+    );
+    reg [2:0] Cnt;
+    wire OR_LastStageRst;
+    assign OR_LastStageRst = LastStage | Rst;
+    always @(posedge clk) begin
+        if(OR_LastStageRst) Cnt <= 3'b000;
+        else begin
+            Cnt <= Cnt + 1;
         end
-    endgenerate
-    assign Cout = C[15];
+    end
 endmodule
