@@ -12,7 +12,7 @@
 // 16-bit ripple carry adder
 // Dependencies: 
 //
-// Revision: 2.0 - verified
+// Revision: 2.1 - verified & add Buff_OutR
 //////////////////////////////////////////////////////////////////////////////////
 module Controller(
     input clk,
@@ -31,6 +31,7 @@ module Controller(
     output Flag,
     output [1:0] Jump,
     output LI,
+    output Buff_OutR,
     output LIorMOV,
     output MEMresource,
     output OprandB,
@@ -75,6 +76,7 @@ module Controller(
         .Flag(Flag),
         .ALUop(ALUop),
         .Buff_PSW(Buff_PSW),
+        .Buff_OutR(Buff_OutR),
         .Done(Done)
     );
 endmodule

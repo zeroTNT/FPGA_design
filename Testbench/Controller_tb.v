@@ -92,6 +92,7 @@ module Controller_Controller_sch_tb();
    );
 // Initialize Inputs
    // Initialize Inputs
+	initial #5000 $finish;
    initial begin
       #150
       Ins = 6'h01;
