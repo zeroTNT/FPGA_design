@@ -15,18 +15,10 @@
 // Revision: 2.1 - verified & add Buff_OutR
 //////////////////////////////////////////////////////////////////////////////////
 module CompleteComputer(
-    input clk,
-    input Rst,
-    input TBorNot,
-    input [7:0] Tb_MEMAddr,
-    input [15:0] Tb_MEMData,
-    input Tb_MEMWE,
-    output Done,
-    output [15:0] OutMEM,
-    output [15:0] OutNextPC,
-    output [15:0] OutPC,
-    output [2:0] OutPSW_NZC,
-    output [15:0] OutReg
+    input clk,          input Rst,
+    input TBorNot,      input Tb_MEMWE,         input [7:0] Tb_MEMAddr, input [15:0] Tb_MEMData,
+    output [15:0] OutPC,output [15:0] OutNextPC,output [15:0] OutMEM,   output [2:0] OutPSW_NZC,
+    output Done,        output [15:0] OutReg
     );
     //=============== Internal signal =============//
     wire ALUop;
@@ -52,75 +44,25 @@ module CompleteComputer(
     wire [1:0] InsL;
     //=============================================//
     Controller C(
-        .clk(clk),
-        .Rst(Rst),
-        .PSW_NZC(OutPSW_NZC[1:0]),
-        .InsM(InsM[15:8]),
-        .InsL(InsL[1:0]),
-
-        .ALUorNot(ALUorNot),
-        .LIorMOV(LIorMOV),
-        .MEMresource(MEMresource),
-        .WE_MEM(WE_MEM),
-        .Buff_MEMIns(Buff_MEMIns),
-
-        .WBresource(WBresource),
-        .RBresource(RBresource),
-        .OprandB(OprandB),
-        .LI(LI),
-        .Buff_OutR(Buff_OutR),
-        .PCplus1orWB(PCplus1orWB),
-        .WE_RF(WE_RF),
-
-        .Flag(Flag),
-        .ALUop(ALUop),
-        .Buff_PSW(Buff_PSW),
-
-        .Buff_PC(Buff_PC),
-        .Branch(Branch),
-        .Jump(Jump),
-
+        .clk(clk), .Rst(Rst),
+        .PSW_NZC(OutPSW_NZC[1:0]), .InsM(InsM[15:8]), .InsL(InsL[1:0]),
+        .Buff_MEMIns(Buff_MEMIns), .WE_MEM(WE_MEM), .MEMresource(MEMresource), 
+        .ALUorNot(ALUorNot), .LIorMOV(LIorMOV), .LI(LI),
+        .WE_RF(WE_RF), .Buff_OutR(Buff_OutR), .WBresource(WBresource), .RBresource(RBresource),
+        .Buff_PSW(Buff_PSW), .OprandB(OprandB), .Flag(Flag), .ALUop(ALUop),
+        .Buff_PC(Buff_PC), .PCplus1orWB(PCplus1orWB), .Branch(Branch), .Jump(Jump),
         .Done(Done)
     );
-    
     Datapath DP(
-        .clk(clk),
-        .Rst(Rst),
-        .TBorNot(TBorNot),
-        .Tb_MEMWE(Tb_MEMWE),
-        .Tb_MEMAddr(Tb_MEMAddr[7:0]),
-        .Tb_MEMData(Tb_MEMData[15:0]),
-
-        
-        .ALUorNot(ALUorNot),
-        .LIorMOV(LIorMOV),
-        .MEMresource(MEMresource),
-        .WE_MEM(WE_MEM),
-        .Buff_MEMIns(Buff_MEMIns),
-
-        .WBresource(WBresource),
-        .RBresource(RBresource),
-        .oprandB(OprandB),
-        .LI(LI),
-        .Buff_OutR(Buff_OutR),
-        .PCplus1orWB(PCplus1orWB),
-        .WE_RF(WE_RF),
-
-        .Flag(Flag),
-        .ALUop(ALUop),
-        .Buff_PSW(Buff_PSW),
-        
-        .Buff_PC(Buff_PC),
-        .Branch(Branch),
-        .Jump(Jump),
-
-        .InsM(InsM[15:8]),
-        .InsL(InsL[1:0]),
-
-        .OutM(OutMEM[15:0]),
-        .OutNextPC(OutNextPC[15:0]),
-        .OutPC(OutPC[15:0]),
-        .PSW_NZC(OutPSW_NZC[2:0]),
+        .clk(clk), .Rst(Rst), .TBorNot(TBorNot),
+        .Tb_MEMWE(Tb_MEMWE), .Tb_MEMAddr(Tb_MEMAddr[7:0]), .Tb_MEMData(Tb_MEMData[15:0]),
+        .Buff_MEMIns(Buff_MEMIns), .WE_MEM(WE_MEM), .MEMresource(MEMresource), 
+        .ALUorNot(ALUorNot), .LIorMOV(LIorMOV), .LI(LI),
+        .WE_RF(WE_RF), .Buff_OutR(Buff_OutR), .WBresource(WBresource), .RBresource(RBresource),  
+        .Buff_PSW(Buff_PSW), .oprandB(OprandB), .Flag(Flag), .ALUop(ALUop),
+        .Buff_PC(Buff_PC), .PCplus1orWB(PCplus1orWB), .Branch(Branch), .Jump(Jump),
+        .PSW_NZC(OutPSW_NZC[2:0]), .InsM(InsM[15:8]), .InsL(InsL[1:0]),
+        .OutM(OutMEM[15:0]), .OutNextPC(OutNextPC[15:0]), .OutPC(OutPC[15:0]),
         .OutR(OutReg[15:0])
     );
 endmodule

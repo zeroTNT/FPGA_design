@@ -22,7 +22,6 @@ module FA16b(
     output [15:0] Sum,
     output Cout);
     wire [15:0] C;
-
     genvar i;
     generate
         for (i=0; i<16; i=i+1) begin: FA

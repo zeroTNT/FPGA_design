@@ -20,7 +20,7 @@
 // Revision: 
 // Revision 2.0 - verified
 // Additional Comments: 
-// Decoder only used once in the whole project, it's not necessary to use parameterized module.
+// Decoder only used one type in the whole project, it's not necessary to use parameterized module.
 //////////////////////////////////////////////////////////////////////////////////
 module RegisterFile(
 	input clk_n,				// clock

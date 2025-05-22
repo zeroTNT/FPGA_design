@@ -10,7 +10,8 @@
 // Tool versions:  ISE 14.7 Webpack
 // Description: 
 // This module is the datapath of the processor.
-// It contains the PC circuit module, RF & ALU circuit module, MEM circuit module, and other buffers/multiplexers.
+// It contains the PC circuit module, RF & ALU circuit module, MEM circuit module,
+// and other buffers/multiplexers.
 // Dependencies: 
 // PCcircuitry.v, Mul16b2x1.v, Mul8b2x1.v, Memory256x16.v, RFplusALU.v
 // Reg16bClkEnp.v, Reg16bClkEnRp.v
@@ -181,11 +182,9 @@ module Datapath(
 		.OprandB(oprandB),
 		.WBresource(WBresource),
 		.RBresource(RBresource),
-		
 		.PSW_C(PSW_NZC[0]),
 		.Flag(Flag),
 		.ALUop(ALUop),
-		
 		.Rm(Rm),
 		.Rd(Rd),
 		.Sum(Sum),
@@ -199,9 +198,7 @@ module Datapath(
 	always @(posedge clk, posedge Rst) begin
 		if(Rst) PSW_NZC <= 3'b000;
 		else if(Buff_PSW) begin
-			PSW_NZC[0] <= C;
-			PSW_NZC[1] <= Z;
-			PSW_NZC[2] <= N;
+			PSW_NZC[2:0] <= {N, Z, C};
 		end
 	end
 	Reg16bClkEnp ALUbuffer(

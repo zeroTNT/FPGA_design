@@ -9,7 +9,7 @@
 // Target Devices: Xilix Virtex6 XC6VLX75T-FF484
 // Tool versions:  ISE 14.7 Webpack
 // Description: 
-// 16-bit ripple carry adder
+// This module is used to calculate the next PC address.
 // Dependencies: 
 // PCFA2c.v, Mul16b2x1.v, Mul16b4x1.v
 // Revision:

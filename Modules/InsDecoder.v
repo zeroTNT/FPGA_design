@@ -65,16 +65,21 @@ module InsDecoder(
 
     //Branch
     always @(*) begin
-        branch_condition = (InsM[11:8] == 4'b1110) || (InsM[8] ^ ( (PSW_NZC[1] && (~InsM[9])) || (PSW_NZC[0] && InsM[9]) ));
+        branch_condition = (InsM[11:8] == 4'b1110) 
+            || (InsM[8] ^ ( (PSW_NZC[1] && (~InsM[9]))
+            || (PSW_NZC[0] && InsM[9]) ));
         if(Rst) Branch = 1'b0;
-        else if ( ( {InsM[15:12], branch_condition} == 5'b11001 ) || (InsM[15:11] == 5'b10001) ) Branch = 1'b1;
+        else if ( ( {InsM[15:12], branch_condition} == 5'b11001 )
+            || (InsM[15:11] == 5'b10001) ) Branch = 1'b1;
         else Branch = 1'b0;
     end
 
     //ALUop
     always @(*) begin
         // SUBI || CMP || (SUB || SBB)
-        sub_condition = ({InsM[15:14], InsM[11]} == 3'b010) || ({InsM[15:11], InsL[1:0]} == 7'b0011001) || ({InsM[15:11], InsL[1]} == 6'b000001);
+        sub_condition = ({InsM[15:14], InsM[11]} == 3'b010)
+            || ({InsM[15:11], InsL[1:0]} == 7'b0011001)
+            || ({InsM[15:11], InsL[1]} == 6'b000001);
         if ({Rst, Cnt[2:0], sub_condition}==5'b00101) ALUop = 1'b1;
         else ALUop = 1'b0;
     end
@@ -100,7 +105,9 @@ module InsDecoder(
 
     //OprandB
     always @(*) begin
-        OprandB_condition = (InsM[15:11] == 5'b01000) || ({InsM[15:14], InsM[12:11]} == 4'b0011) || ({InsM[15:13], InsM[11]} == 4'b0011);
+        OprandB_condition = (InsM[15:11] == 5'b01000)
+            || ({InsM[15:14], InsM[12:11]} == 4'b0011)
+            || ({InsM[15:13], InsM[11]} == 4'b0011);
         if({Rst, Cnt[2:0], OprandB_condition} == 5'b0001_1) OprandB = 1'b1;
         else OprandB = 1'b0;
     end
@@ -119,14 +126,16 @@ module InsDecoder(
     //WE_RF
     always @(*) begin
         WE_RF_condition1 = (~(InsM[15:11] == 5'b11100)) && (Cnt[2:0] == 3'b100);
-        WE_RF_condition2 = ( (InsM[15:11] == 5'b10010) || (InsM[15:11] == 5'b10001) ) && (Cnt[2:0] == 3'b001);
+        WE_RF_condition2 = ( (InsM[15:11] == 5'b10010) || (InsM[15:11] == 5'b10001) )
+                            && (Cnt[2:0] == 3'b001);
         if (Rst) WE_RF = 1'b0;
         else WE_RF = WE_RF_condition1 || WE_RF_condition2;
     end
 
     //WBresource
     always @(*) begin
-        if( ({Rst, Cnt[2:0]} == 4'b0100) && ( (InsM[15:11] == 5'b00011) || (InsM[15:11] == 5'b00100) ) )WBresource = 1'b1;
+        if( ({Rst, Cnt[2:0]} == 4'b0100) &&
+            ( (InsM[15:11] == 5'b00011) || (InsM[15:11] == 5'b00100) ) )WBresource = 1'b1;
         else WBresource = 1'b0;
     end
 
@@ -212,11 +221,13 @@ module InsDecoder(
 
     //Buff_OutR
     always @(*) begin
-        Buff_OutR = (Rst == 1'b0) && (InsM[15:11] == 5'b11100) && (InsL[1:0] == 2'b00) && (Cnt[2:0] == 3'b001);
+        Buff_OutR = (Rst == 1'b0) && (InsM[15:11] == 5'b11100)
+                    && (InsL[1:0] == 2'b00) && (Cnt[2:0] == 3'b001);
     end
 
     //Done
     always @(*) begin
-        Done = (Rst == 1'b0) && (Cnt[2:1] == 2'b01) && (InsM[15:11] == 5'b11100) && (InsL[1:0] == 2'b01);
+        Done = (Rst == 1'b0) && (Cnt[2:1] == 2'b01)
+                && (InsM[15:11] == 5'b11100) && (InsL[1:0] == 2'b01);
     end
 endmodule
