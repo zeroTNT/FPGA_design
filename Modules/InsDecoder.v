@@ -9,7 +9,8 @@
 // Target Devices: Xilix Virtex6 XC6VLX75T-FF484
 // Tool versions:  ISE 14.7 Webpack
 // Description: 
-// 16-bit ripple carry adder
+// This module is a instruction decoder.
+// It takes a 16-bit instruction and generates control signals for the processor.
 // Dependencies: 
 //
 // Revision:

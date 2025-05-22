@@ -9,7 +9,12 @@
 // Target Devices: Xilix Virtex6 XC6VLX75T-FF484
 // Tool versions:  ISE 14.7 Webpack
 // Description: 
-// This tool is annoying, not such convenience.
+// This module is a 16-bit register file with 8 registers.
+// It has a write enable signal, a write address, and a write data input.
+// It also has two read addresses and outputs the corresponding read data.
+// The write operation is performed on the negedge of the clock.
+// The read operation is performed as combinaitonal circuit.
+//
 // Dependencies: 
 //
 // Revision: 

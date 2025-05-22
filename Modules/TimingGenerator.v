@@ -9,7 +9,9 @@
 // Target Devices: Xilix Virtex6 XC6VLX75T-FF484
 // Tool versions:  ISE 14.7 Webpack
 // Description: 
-// 16-bit ripple carry adder
+// This module is a timing generator that counts up to 7 (3 bits) and resets when
+// LastStage or Rst is high. The count is used to control the timing of operations
+// for executing a instruction.
 // Dependencies: 
 //
 // Revision:

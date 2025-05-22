@@ -18,11 +18,11 @@
 module PCcircuitry(
 	input [15:0] PC,
     input [10:0] Ins,
-    input [15:0] PCplus1_mul,
     input Branch,
     input [1:0] Jump,
     input [15:0] Rm,
     input [15:0] Rd,
+    output [15:0] PCplus1_mul,
     output [15:0] nextPC
     );
     //=========== Internal signal ============//

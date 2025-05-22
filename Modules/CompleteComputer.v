@@ -9,7 +9,7 @@
 // Target Devices: Xilix Virtex6 XC6VLX75T-FF484
 // Tool versions:  ISE 14.7 Webpack
 // Description: 
-// 16-bit ripple carry adder
+// Connent the controller and datapath together.
 // Dependencies: 
 //
 // Revision: 2.1 - verified & add Buff_OutR

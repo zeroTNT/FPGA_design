@@ -9,7 +9,7 @@
 // Target Devices: Xilix Virtex6 XC6VLX75T-FF484
 // Tool versions:  ISE 14.7 Webpack
 // Description: 
-// This tool is annoying, not such convenience.
+// This 256-word 16-bit memory module is used to store the instruction and data.
 // Dependencies: 
 // Mul8b2x1.v, Mul16b2x1.v, Mul2x1.v, Decoder3x8.v, Mul16b8x1.v
 // Revision: 
@@ -70,14 +70,20 @@ module Memory256x16(
 	generate
 		for (i = 0; i < 8; i = i + 1) begin: genMem
 			// memory module introduced from Xilinx library
-			RAM32X8S #( .INIT_00(32'h00000000), .INIT_01(32'h00000000), .INIT_02(32'h00000000), .INIT_03(32'h00000000), 
-				.INIT_04(32'h00000000), .INIT_05(32'h00000000), .INIT_06(32'h00000000), .INIT_07(32'h00000000)
-				) MEM_Group_low(.A0(addr[0]), .A1(addr[1]), .A2(addr[2]), .A3(addr[3]), .A4(addr[4]), 
-					.D(Data[7:0]), .WCLK(clk), .WE(WEtarget[i]), .O(Q[i][7:0]));
-			RAM32X8S #( .INIT_00(32'h00000000), .INIT_01(32'h00000000), .INIT_02(32'h00000000), .INIT_03(32'h00000000), 
-				.INIT_04(32'h00000000), .INIT_05(32'h00000000), .INIT_06(32'h00000000), .INIT_07(32'h00000000)
-				) MEM_Group_high(.A0(addr[0]), .A1(addr[1]), .A2(addr[2]), .A3(addr[3]), .A4(addr[4]), 
-					.D(Data[15:8]), .WCLK(clk), .WE(WEtarget[i]), .O(Q[i][15:8]));
+			RAM32X8S #( .INIT_00(32'h00000000), .INIT_01(32'h00000000),
+			.INIT_02(32'h00000000), .INIT_03(32'h00000000),
+			.INIT_04(32'h00000000), .INIT_05(32'h00000000),
+			.INIT_06(32'h00000000), .INIT_07(32'h00000000)
+			)MEM_Group_low(
+				.A0(addr[0]), .A1(addr[1]), .A2(addr[2]), .A3(addr[3]), .A4(addr[4]), 
+				.D(Data[7:0]), .WCLK(clk), .WE(WEtarget[i]), .O(Q[i][7:0]));
+			RAM32X8S #( .INIT_00(32'h00000000), .INIT_01(32'h00000000),
+			.INIT_02(32'h00000000), .INIT_03(32'h00000000), 
+			.INIT_04(32'h00000000), .INIT_05(32'h00000000),
+			.INIT_06(32'h00000000), .INIT_07(32'h00000000)
+			) MEM_Group_high(
+				.A0(addr[0]), .A1(addr[1]), .A2(addr[2]), .A3(addr[3]), .A4(addr[4]), 
+				.D(Data[15:8]), .WCLK(clk), .WE(WEtarget[i]), .O(Q[i][15:8]));
 		end
 	endgenerate
 	//========================================//

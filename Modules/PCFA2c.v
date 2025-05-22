@@ -9,7 +9,7 @@
 // Target Devices: Xilix Virtex6 XC6VLX75T-FF484
 // Tool versions:  ISE 14.7 Webpack
 // Description: 
-// 1-bit full adder
+// A simple 16-bit adder for the PC circuitry.
 // Dependencies: 
 // FA1b.v
 // Revision:

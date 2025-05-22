@@ -9,13 +9,14 @@
 // Target Devices: Xilix Virtex6 XC6VLX75T-FF484
 // Tool versions:  ISE 14.7 Webpack
 // Description: 
-// This tool is annoying, not such convenience.
+// This module is the datapath of the processor.
+// It contains the PC circuit module, RF & ALU circuit module, MEM circuit module, and other buffers/multiplexers.
 // Dependencies: 
 // PCcircuitry.v, Mul16b2x1.v, Mul8b2x1.v, Memory256x16.v, RFplusALU.v
 // Reg16bClkEnp.v, Reg16bClkEnRp.v
 //
 // Revision: 
-// Revision 2.1 - verified & add Buff_OutR
+// Revision 2.2 - verified & revise the comment
 // Additional Comments: 
 //////////////////////////////////////////////////////////////////////////////////
 module Datapath(

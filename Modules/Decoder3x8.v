@@ -9,7 +9,8 @@
 // Target Devices: Xilix Virtex6 XC6VLX75T-FF484
 // Tool versions:  ISE 14.7 Webpack
 // Description: 
-// This tool is annoying, not such convenience.
+// This module is a Enabled-control 3-to-8 decoder.
+// It takes a 3-bit input and generates an 8-bit output with one-hot code format, while enable.
 // Dependencies: 
 //
 // Revision: 

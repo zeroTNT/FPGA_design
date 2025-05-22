@@ -9,10 +9,11 @@
 // Target Devices: Xilix Virtex6 XC6VLX75T-FF484
 // Tool versions:  ISE 14.7 Webpack
 // Description: 
-// 16-bit ripple carry adder
+// This module is the controller of the datapath.
+// It generates control signals for the datapath & record the current stage of PC.
 // Dependencies: 
-//
-// Revision: 2.1 - verified & add Buff_OutR
+// InsDecoder.v, TimingGenerator.v
+// Revision: 2.2 - verified & revise the comment
 //////////////////////////////////////////////////////////////////////////////////
 module Controller(
     input clk,

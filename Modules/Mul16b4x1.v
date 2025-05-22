@@ -9,14 +9,11 @@
 // Target Devices: Xilix Virtex6 XC6VLX75T-FF484
 // Tool versions:  ISE 14.7 Webpack
 // Description: 
-// This tool is annoying, not such convenience.
+// This module is a 16-bit 4-to-1 multiplexer.
 // Dependencies: 
 // Mul2x1.v
 // Revision: 
 // Revision 2.0 - verified
-// Additional Comments: 
-//	This multiplexer is used to select one of the 16-bit inputs within 4 inputs.
-//	
 //////////////////////////////////////////////////////////////////////////////////
 module Mul16b4x1(
 	input [1:0] addr,

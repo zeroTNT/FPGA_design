@@ -9,14 +9,11 @@
 // Target Devices: Xilix Virtex6 XC6VLX75T-FF484
 // Tool versions:  ISE 14.7 Webpack
 // Description: 
-// This tool is annoying, not such convenience.
+// This module is a 16-bit 8-to-1 multiplexer.
 // Dependencies: 
 //
 // Revision: 
 // Revision 2.0 - verified
-// Additional Comments: 
-//	This multiplexer is used to select one of the 16-bit inputs within 3 inputs.
-//	
 //////////////////////////////////////////////////////////////////////////////////
 module Mul16b8x1(
 	input [2:0] addr,

@@ -9,7 +9,7 @@
 // Target Devices: Xilix Virtex6 XC6VLX75T-FF484
 // Tool versions:  ISE 14.7 Webpack
 // Description: 
-// This tool is annoying, not such convenience.
+// Connection between RegisterFile.v and FA16b2c.v
 // Dependencies: 
 // RegisterFile.v, FA16b2c.v, Mul16b2x1.v, Reg16bClkEn.v, Reg16bClkEnR.v
 // Revision: 

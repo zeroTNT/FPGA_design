@@ -9,14 +9,13 @@
 // Target Devices: Xilix Virtex6 XC6VLX75T-FF484
 // Tool versions:  ISE 14.7 Webpack
 // Description: 
-// This tool is annoying, not such convenience.
+// This module is a 1-bit 2-to-1 multiplexer.
+// It selects one of the two 1-bit inputs based on the address input.
 // Dependencies: 
 //
 // Revision: 
 // Revision 2.0 - verified
 // Additional Comments: 
-//	This multiplexer is used to select one of the 1-bit inputs within 1 input.
-//	
 //////////////////////////////////////////////////////////////////////////////////
 module Mul2x1(
     input addr,

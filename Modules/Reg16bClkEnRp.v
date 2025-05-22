@@ -9,7 +9,10 @@
 // Target Devices: Xilix Virtex6 XC6VLX75T-FF484
 // Tool versions:  ISE 14.7 Webpack
 // Description: 
-// This tool is annoying, not such convenience.
+// This module is a 16-bit register with clock enable.
+// It captures the input data on the posedge of the clock,
+// if the clock enable signal is high.
+// It also has a reset signal that clear the output when high.
 // Dependencies: 
 //
 // Revision: 

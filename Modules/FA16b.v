@@ -9,7 +9,7 @@
 // Target Devices: Xilix Virtex6 XC6VLX75T-FF484
 // Tool versions:  ISE 14.7 Webpack
 // Description: 
-// 16-bit ripple carry adder
+// 16-bit ripple carry adder consists of 16 1-bit full adders.
 // Dependencies: 
 // FA1b.v
 // Revision:
